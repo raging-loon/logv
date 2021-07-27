@@ -1,8 +1,6 @@
 package src.sql;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 public class MySqlErrorLog {
   /*    MySQL error.log format
     time thread [label] [err_code] [subsystem] msg
