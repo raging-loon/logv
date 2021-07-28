@@ -10,11 +10,9 @@ public class Main{
       System.exit(0);
     }
     //*/
-    LogParser logParser = new LogParser("apache2", "/var/log/apache2/access.log");
-    Apache2Log apache2Log = logParser.Apache2LogParser();
-    // apache2Log.PrintIpCounts();
-    
-    apache2Log.nmapScanSearch(false);
+    Apache2Log log = new Apache2Log("tests/logs/test2.log");
+    log.Parser();
+    log.SqliDetector(false);
   }
 
 }

@@ -3,9 +3,11 @@ import java.util.*;
 import java.nio.file.*;
 import src.LogFormat;
 import src.LogObject;
+import src.utils.AttackIdentifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 public class Apache2Log extends LogObject implements LogFormat {
   public List<String>   HTTPUserAgents = new ArrayList<String>();
   public List<String>   HTTPRequests = new ArrayList<String>();
@@ -164,4 +166,45 @@ public class Apache2Log extends LogObject implements LogFormat {
     return found;
   }
 
+
+  public boolean XssDetector(boolean silent){
+    int occurences = 0;
+    boolean found = false;
+    for(int i = 0; i < HTTPRequests.size(); i++){
+      if(AttackIdentifier.XssMatchFound(HTTPRequests.get(i))){
+        found = true;occurences++;
+        if(!silent){
+          System.out.println("--------------------------");
+          System.out.println("| Ip Address: " + HTTPIpAddresses.get(i));
+          System.out.println("| Verb: " + HTTPRequests.get(i).split(" ")[0].substring(1));
+          System.out.println("| Request: " + HTTPRequests.get(i).split(" ")[1]);
+          System.out.println("| Time: " + HTTPRequestTime.get(i));
+        }
+      }
+    }
+    if(!silent){
+      System.out.println("Total possible xss attacks identified: " + occurences);
+    }
+    return found;
+  }
+
+
+  public boolean SqliDetector(boolean silent){
+    int occurences = 0;
+    boolean found = false;
+    for(int i = 0; i < HTTPRequests.size(); i++){
+      if(AttackIdentifier.SqliMatchFound(HTTPRequests.get(i))){
+        found = true;occurences++;
+        if(!silent){
+          System.out.println("--------------------------");
+          System.out.println("| Ip Address: " + HTTPIpAddresses.get(i));
+          System.out.println("| Request: " + HTTPRequests.get(i).split(" ")[1]);
+          System.out.println("| Time: " + HTTPRequestTime.get(i));
+        }
+      }
+    }
+    if(!silent) System.out.println("Total possible sqli attacks: " + occurences);
+    return found;
+  }
+  
 }
