@@ -1,13 +1,44 @@
 package src.http;
+
 import java.util.*;
 import java.nio.file.*;
-import src.LogFormat;
-import src.LogObject;
+import src.*;
 import src.utils.AttackIdentifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+ 
+/**
+ * Apache2 Log Class
+ * 
+ * Log parser for the standard Apache2 and Nginx log format 
+ * specified in /etc/apache2 or /etc/nginx
+ * 
+ * Functions:
+ *  Parser()        -> Self explanatory, parses the log
+ * 
+ *  getIpCounts     -> @return a Hashmap that contains all Ip addresses
+ *                     and the number of times they show up
+ * 
+ *  getIpCounts     -> overrides the above, takes @param ipAddr
+ *                     and @return the number of times it showed up
+ * 
+ *  printIpCounts   -> calls getIpCounts(the one that returns a HashMap)
+ *                     and prints the results
+ * 
+ *  nmapScanSearch  -> uses a regular expression to parse through HTTPUserAgents
+ *                     @return true if one or more is found. 
+ *                     @param silent is used for printing output
+ * 
+ *  XssDetector     -> uses {@link src.utils.AttackIdentifier#XssMatchFound(String)}
+ *                     to parse through all of the HTTPRequests and look for the 
+ *                     signiture XSS patterns
+ * 
+ *  SqliDetector    -> uses {@link src.utils.AttackIdentifier#SqliMatchFound(String)}
+ *                     to parse though all of the HTTPRequests and look for the 
+ *                     signiture SQLi patterns
+ * 
+ * @version 1.0
+ * @author  James DeLuca
+ */
 public class Apache2Log extends LogObject implements LogFormat {
   public List<String>   HTTPUserAgents = new ArrayList<String>();
   public List<String>   HTTPRequests = new ArrayList<String>();
