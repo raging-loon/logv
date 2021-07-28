@@ -13,4 +13,5 @@ public class MySqlQueryLog {
   public MySqlQueryLog(String filename){
     this.filename = filename;
   }
+
 }
