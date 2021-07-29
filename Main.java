@@ -12,7 +12,7 @@ public class Main{
     //*/
     Apache2Log log = new Apache2Log("tests/logs/test2.log");
     log.Parser();
-    log.SqliDetector(false);
+    log.PathTraversalDetector(false);
   }
 
 }

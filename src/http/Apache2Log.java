@@ -37,7 +37,7 @@ import src.utils.AttackIdentifier;
  *                     signiture SQLi patterns
  * 
  * @version 1.0
- * @author  James DeLuca
+ *
  */
 public class Apache2Log extends LogObject implements LogFormat {
   public List<String>   HTTPUserAgents = new ArrayList<String>();
@@ -237,5 +237,21 @@ public class Apache2Log extends LogObject implements LogFormat {
     if(!silent) System.out.println("Total possible sqli attacks: " + occurences);
     return found;
   }
-  
+  public boolean PathTraversalDetector(boolean silent){
+    int occurences = 0;
+    boolean found = false;
+    for(int i = 0; i < HTTPRequests.size(); i++){
+      if(AttackIdentifier.PathTraversalMatchFound(HTTPRequests.get(i))){
+        found = true; occurences++;
+        if(!silent){
+          System.out.println("--------------------------");
+          System.out.println("| Ip Address: " + HTTPIpAddresses.get(i));
+          System.out.println("| Request: " + HTTPRequests.get(i));
+          System.out.println("| Time: " + HTTPRequestTime.get(i));
+        }
+      }
+    }
+    if(!silent) System.out.println("Total possible path traversal attacks found: " + occurences);
+    return found;
+  }
 }
