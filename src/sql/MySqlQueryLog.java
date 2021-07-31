@@ -66,4 +66,5 @@ public class MySqlQueryLog extends LogObject implements LogFormat{
     }
 
   }
+  public void logPrint(){}
 }

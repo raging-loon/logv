@@ -53,4 +53,17 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
       System.exit(-1);
     }
   }
+
+  public void logPrint(){
+    for(int i = 0; i < ErrorCode.size(); i++){
+      System.out.println("----------------------");
+      System.out.println("Time: " + ErrorTime.get(i));
+      System.out.println("Thread: " + ErrorThread.get(i));
+      System.out.println("Label: " + ErrorLabel.get(i));
+      System.out.println("Code: " + ErrorCode.get(i));
+      System.out.println("Subsystem: " + SubSystem.get(i));
+      System.out.println("Message: " + ErrorMessage.get(i));
+
+    }
+  }
 }

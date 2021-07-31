@@ -35,6 +35,10 @@ import src.utils.AttackIdentifier;
  *  SqliDetector    -> uses {@link src.utils.AttackIdentifier#SqliMatchFound(String)}
  *                     to parse though all of the HTTPRequests and look for the 
  *                     signiture SQLi patterns
+ *  getTableData    -> get the proper table data for the JTable in 
+ *                     {@link Main.java#main(String argv[])}
+ * 
+ *  logPrint        -> Print the logs in a better looking format(console only)
  * 
  * @version 1.0
  *
@@ -149,15 +153,12 @@ public class Apache2Log extends LogObject implements LogFormat {
     HashMap<String,Integer> IpCount = new HashMap<>();
     for(String addr: HTTPIpAddresses){
       if(IpCount.get(addr)==null){
-        IpCount.put(addr, 0);
+        IpCount.put(addr, 1);
       } else {
         IpCount.put(addr,IpCount.get(addr)+1);
       }
     }
-    // fix an off by one error
-    for(String i: IpCount.keySet()){
-      IpCount.put(i, IpCount.get(i) + 1);
-    }
+    
     return IpCount;
   }
 
@@ -260,10 +261,6 @@ public class Apache2Log extends LogObject implements LogFormat {
   public String[][] getTableData(){
     int max = HTTPIpAddresses.size();
     String[][] table = new String[max][];// = {{},{},{}};
-    /* table
-      {{temptable},{temptable}}
-     
-     */
     //{"Ip Address", "Time","Request","Referer","Status Code","Length","User Agent"};
     for(int i = 0; i < max;i++){
 
@@ -281,4 +278,19 @@ public class Apache2Log extends LogObject implements LogFormat {
     }
     return table;
   }
+
+
+  public void logPrint(){
+    for(int i = 0; i < this.HTTPIpAddresses.size();i++){
+      System.out.println("-------------------------");
+      System.out.println("Ip Address: " + HTTPIpAddresses.get(i));
+      System.out.println("Time: " + HTTPRequestTime.get(i));
+      System.out.println("Request: " + HTTPRequests.get(i));
+      System.out.println("Status Code: " + HTTPStatusCodes.get(i));
+      System.out.println("Length: " + HTTPResponceLength.get(i));
+      System.out.println("Referer: " + HTTPReferer.get(i));
+      System.out.println("User Agent: " + HTTPUserAgents.get(i));
+    }
+  }
+
 }
