@@ -40,6 +40,7 @@ import src.utils.AttackIdentifier;
  *
  */
 public class Apache2Log extends LogObject implements LogFormat {
+  public final String   TableHeaders[] = {"Ip Address", "Time","Request","Referer","Status Code","Length","User Agent"};
   public List<String>   HTTPUserAgents = new ArrayList<String>();
   public List<String>   HTTPRequests = new ArrayList<String>();
   public List<String>   HTTPIpAddresses = new ArrayList<String>();
@@ -48,7 +49,7 @@ public class Apache2Log extends LogObject implements LogFormat {
   public List<String>   HTTPRequestTime = new ArrayList<String>();
   public List<String>   HTTPReferer = new ArrayList<String>();
   
-  public Apache2Log(String logFile){ this.logFile = logFile; }
+  public Apache2Log(String logFile){ this.logFile = logFile; this.logFormat="apache2";}
 
 
 
@@ -253,5 +254,31 @@ public class Apache2Log extends LogObject implements LogFormat {
     }
     if(!silent) System.out.println("Total possible path traversal attacks found: " + occurences);
     return found;
+  }
+
+
+  public String[][] getTableData(){
+    int max = HTTPIpAddresses.size();
+    String[][] table = new String[max][];// = {{},{},{}};
+    /* table
+      {{temptable},{temptable}}
+     
+     */
+    //{"Ip Address", "Time","Request","Referer","Status Code","Length","User Agent"};
+    for(int i = 0; i < max;i++){
+
+      String[] tempTable = {HTTPIpAddresses.get(i),
+                            HTTPRequestTime.get(i),
+                            HTTPRequests.get(i),
+                            HTTPReferer.get(i),
+                            String.valueOf(HTTPStatusCodes.get(i)),
+                            String.valueOf(HTTPResponceLength.get(i)),
+                            HTTPUserAgents.get(i)};
+  
+      table[i] = tempTable;
+      // for(int j = 0; j < tempTable.length;j++) 
+        // table[0][i][j] = table[0][i][j].toString();
+    }
+    return table;
   }
 }

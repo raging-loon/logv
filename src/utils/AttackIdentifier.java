@@ -39,9 +39,18 @@ public class AttackIdentifier {
     return false;
     }
   }
-
+  /**
+   * Look for path/directory traversal attacks based on a regex
+   * Perhaps soemtime in the future there should be an option
+   * for a user supplied file list and the function
+   * will look for those files either by themselves or with 
+   * path traversal characters
+   * @param line
+   * @return boolean
+   */
   public static boolean PathTraversalMatchFound(String line){
-    if(line.matches(".*(\\.\\./)+.*"))  return true;
+    // still doesn't match ..\/ for some reason...
+    if(line.matches(".*(\\.\\./|\\.\\.\\|\\.\\.\\.\\./\\|\\.\\.\\.\\./\\//)+.*"))  return true;
     else return false;
   }
 }

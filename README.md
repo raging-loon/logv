@@ -7,4 +7,10 @@ This log viewing application(written in Java so it can be platform in dependant)
   - Identify directory brute forcing, traversal, xss, SQLi, etc
   - Look at Windows event logs
   - Detect Nmap scans
-  - Produce frequency charts for various things 
+  - Produce frequency charts for various things
+
+## Bugs
+ - SQLi detector is not working :(
+
+
+  
