@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 
 
@@ -29,6 +30,7 @@ public class Main /*implements ActionListener*/{
     JPanel logPanel = new JPanel(new BorderLayout());
 		JPanel infoPanel = new JPanel(new BorderLayout());
 		infoPanel.setSize(400,300);
+    StatusObject settings = new StatusObject();
 
     // JPanel searchArea = new JPanel(new BorderLayout());
 		// JTextField area = new JTextField();
@@ -54,7 +56,7 @@ public class Main /*implements ActionListener*/{
 			public void mouseClicked(MouseEvent e){
         JTable clickedOn = (JTable)e.getSource();
         int rowNo = clickedOn.getSelectedRow(); 
-        JTable infoTable = new JTable(log.getInfoTable(rowNo),d){
+        JTable infoTable = new JTable(log.getInfoTable(rowNo,settings),d){
           @Override
           public boolean isCellEditable(int row, int column) { return false; }
         };

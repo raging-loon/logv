@@ -2,7 +2,6 @@ package src.http;
 
 import java.util.*;
 
-
 import java.nio.file.*;
 import src.*;
 import src.utils.AttackIdentifier;
@@ -313,27 +312,51 @@ public class Apache2Log extends LogObject implements LogFormat {
   }
 
 
-  public String[][] getInfoTable(int rowNo){
+  public String[][] getInfoTable(int rowNo,StatusObject s){
     // int max = HTTPIpAddresses.size();
-    String[][] table = new String[5][];
-    /**
-     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     * | Full Request     | <full request>   |
-     * | Status Code:     | <error code>     |
-     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     **/
-    table[0] =  new String[]{"Full Request", HTTPIpAddresses.get(rowNo) + " - - " +
+    // / table;
+    if(s.doWhoisLookup == true){
+      String[][]table = new String[7][];
+      String[] whoisRes = MiscUtils.WhoisApiDisector(HTTPIpAddresses.get(rowNo));
+      table[0] =  new String[]{"Full Request", HTTPIpAddresses.get(rowNo) + " - - " +
+      HTTPRequestTime.get(rowNo) + " " + 
+      HTTPRequests.get(rowNo) + " " + 
+      HTTPStatusCodes.get(rowNo) + " " +
+      HTTPResponceLength.get(rowNo) + " " +  
+      HTTPReferer.get(rowNo) + " " + 
+      HTTPUserAgents.get(rowNo)};
+
+      table[1] = new String[]{"Status Code", MiscUtils.getStatusCodeMessage(Integer.valueOf(HTTPStatusCodes.get(rowNo)))};
+
+      table[2] = new String[]{"Ip Address Name",whoisRes == null ? "Unknown" :whoisRes[0]};
+      table[3] = new String[]{"Ip Address Organization",whoisRes == null ? "Unknown" :whoisRes[1]};
+      table[4] = new String[]{"Nmap Scan Detected", nmapScanSearch(rowNo) ? "true" : "false"};
+      table[5] = new String[]{"Cross Site Scripting Detected", XssDetector(rowNo) ? "true" : "false"};
+      table[6] = new String[]{"Path Traversal Detected", PathTraversalDetector(rowNo) ? "true" : "false"};
+      return table;
+    } else {
+      String[][]table = new String[5][];
+      table[0] =  new String[]{"Full Request", HTTPIpAddresses.get(rowNo) + " - - " +
                   HTTPRequestTime.get(rowNo) + " " + 
                   HTTPRequests.get(rowNo) + " " + 
                   HTTPStatusCodes.get(rowNo) + " " +
                   HTTPResponceLength.get(rowNo) + " " +  
                   HTTPReferer.get(rowNo) + " " + 
                   HTTPUserAgents.get(rowNo)};
-    table[1] = new String[]{"Status Code", MiscUtils.getStatusCodeMessage(Integer.valueOf(HTTPStatusCodes.get(rowNo)))};
-    table[2] = new String[]{"Nmap Scan Detected", nmapScanSearch(rowNo) ? "true" : "false"};
-    table[3] = new String[]{"Cross Site Scripting Detected", XssDetector(rowNo) ? "true" : "false"};
-    table[4] = new String[]{"Path Traversal Detected", PathTraversalDetector(rowNo) ? "true" : "false"};
-    return table;
+
+      table[1] = new String[]{"Status Code", MiscUtils.getStatusCodeMessage(Integer.valueOf(HTTPStatusCodes.get(rowNo)))};
+      table[2] = new String[]{"Nmap Scan Detected", nmapScanSearch(rowNo) ? "true" : "false"};
+      table[3] = new String[]{"Cross Site Scripting Detected", XssDetector(rowNo) ? "true" : "false"};
+      table[4] = new String[]{"Path Traversal Detected", PathTraversalDetector(rowNo) ? "true" : "false"};
+      return table;
+    }
+    /**
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     * | Full Request     | <full request>   |
+     * | Status Code:     | <error code>     |
+     * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     **/
+  
   }
 
 }

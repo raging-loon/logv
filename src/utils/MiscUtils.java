@@ -1,5 +1,6 @@
 package src.utils;
-
+import java.net.URL;
+import java.io.*;
 public class MiscUtils {
   public static String getStatusCodeMessage(int x){
     switch(x){
@@ -23,5 +24,26 @@ public class MiscUtils {
         return "Unkown";  
     }
   }
-
+  public static String[] WhoisApiDisector(String ipAddr){
+    try{
+      URL url = new URL("http://whois.arin.net/rest/ip/" + ipAddr);
+      String name = "", Org = "";
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
+        for (String line; (line = reader.readLine()) != null;) {
+          if(line.matches(".*(<td>Name</td>).*")){
+            name = line.substring(line.lastIndexOf("<td>")+4,line.lastIndexOf("</td>"));
+          } 
+          if(line.matches(".*(<td>Organization</td>).*")){
+            Org = line.substring(line.lastIndexOf("<td>")+4);
+          }
+        }
+      } 
+      if(name != null && Org != null){
+        return new String[]{name,Org};
+      }
+    } catch(Exception e){
+      return null;
+    }
+    return null;
+  }
 }
