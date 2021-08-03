@@ -2,6 +2,8 @@ package src.http;
 
 import java.util.*;
 
+import javax.swing.JTable;
+
 import java.nio.file.*;
 import src.*;
 import src.utils.AttackIdentifier;
@@ -45,7 +47,7 @@ import src.utils.MiscUtils;
  * @version 1.0
  *
  */
-public class Apache2Log extends LogObject implements LogFormat {
+public class Apache2Log extends LogObject implements LogFormat,Runnable {
   public final String   TableHeaders[] = {"Ip Address", "Time","Request","Referer","Status Code","Length","User Agent"};
   public List<String>   HTTPUserAgents = new ArrayList<String>();
   public List<String>   HTTPRequests = new ArrayList<String>();
@@ -359,4 +361,24 @@ public class Apache2Log extends LogObject implements LogFormat {
   
   }
 
+
+  public void run(){
+    this.Parser();
+  }
+  
+  public void start(){
+    Thread t = new Thread(this);
+    t.start();
+  }
+
+  public JTable getLogTable(){
+    if(this.HTTPIpAddresses.size() == 0){
+      this.start();
+    }
+    JTable table = new JTable(this.getTableData(),this.TableHeaders){
+      @Override 
+      public boolean isCellEditable(int row, int column){ return false; }
+    };
+    return table;
+  }
 }

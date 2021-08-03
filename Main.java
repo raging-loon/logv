@@ -6,32 +6,44 @@ import java.awt.*;
 import java.awt.event.*;
 import src.*;
 import src.http.*;
-import src.sql.*;
 import src.utils.*;
 public class Main /*implements ActionListener*/{
-  private static JFrame mainWindow = new JFrame();
-  private static JMenuBar mainMenu = new JMenuBar();
-  private static void addMenuItems(){
-    JMenu fileMenu = new JMenu("File");
-    // JMenu helpMenu = new JMenu("Help");
-    JMenuItem openFileItem = new JMenuItem("Open");
-    fileMenu.add(openFileItem);
-    mainMenu.add(fileMenu);
-  }
+  
 
   
   public static void main(String argv[]){
+     JFrame mainWindow = new JFrame();
+     JMenuBar mainMenu = new JMenuBar();
+    String currentOpenFile = "";
+    JMenu fileMenu = new JMenu("File");
+    JMenu info  = new JMenu("Info");
+    // JMenu helpMenu = new JMenu("Help");
+    JMenuItem openFileItem = new JMenuItem("Open");
+    JMenuItem fileInfo = new JMenuItem("File");
+    fileInfo.addMouseListener(new MouseAdapter(){
+      public void mouseClicked(MouseEvent e){
+        JPopupMenu infoMenu = new JPopupMenu("File Info");
+        JTextPane text = new JTextPane();
+        infoMenu.add(text);
+
+        mainWindow.add(info);
+        infoMenu.show(mainWindow, e.getX(),e.getY());
+      }
+    });
+    fileMenu.add(openFileItem);
+    info.add(fileInfo);
+    mainMenu.add(fileMenu);
+    mainMenu.add(info);
     if(argv.length == 0){
       OptionPrinter op = new OptionPrinter("1.0.0");
       System.exit(0);
     }
     String logFile = argv[0];
-    addMenuItems();
     JPanel logPanel = new JPanel(new BorderLayout());
 		JPanel infoPanel = new JPanel(new BorderLayout());
 		infoPanel.setSize(400,300);
     StatusObject settings = new StatusObject();
-
+    currentOpenFile = logFile;
     // JPanel searchArea = new JPanel(new BorderLayout());
 		// JTextField area = new JTextField();
 		// searchArea.add(area);
