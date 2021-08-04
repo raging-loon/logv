@@ -149,7 +149,9 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
         this.HTTPStatusCodes.add(HTTPstatusCode);
         this.HTTPUserAgents.add(HTTPUserAgent);
         this.HTTPReferer.add(Referer);
+
       }
+      
     } //catch(FileNotFoundException e){
     //   System.out.println("File: " + ParserLogFile + ": not found");
     //   System.exit(-1);}
@@ -390,3 +392,4 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     return table;
   }
 }
+ 
