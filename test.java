@@ -15,8 +15,10 @@ public class test{
     log2.start();
 
     JTabbedPane tab1 = new JTabbedPane();
-    JPanel p1 = new JPanel(), p2 = new JPanel();
-    p1.add(log1.getLogTable());p2.add(log2.getLogTable());
+    
+    JComponent p1 = new JPanel(), p2 = new JPanel();
+    p1.add(log1.getLogTable());
+    p2.add(log2.getLogTable());
     tab1.addTab(log1.getLogFile(), p1);
     tab1.addTab(log2.getLogFile(),p2);
     mainWindow.add(tab1);

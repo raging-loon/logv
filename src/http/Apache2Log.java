@@ -44,6 +44,14 @@ import src.utils.MiscUtils;
  * 
  *  logPrint        -> Print the logs in a better looking format(console only)
  * 
+ *  getTableData    -> Get all of the table information, used only by {@link #getLogTable()}
+ * 
+ *  getInfoTable    -> Get the table data for a specific row in the mainWindow's JTable.
+ *                     Has information like NMap detection, XSS detection, etc. 
+ *                     WHOIS can be turned on or off.
+ * 
+ *  getLogTable     -> @return a JTable with all of the information provided by the 
+ *                     {@link #getTableData()} and {@link #TableHeaders}
  * @version 1.0
  *
  */
