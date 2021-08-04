@@ -12,7 +12,7 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
   /*    MySQL error.log format
     time thread [label] [err_code] [subsystem] msg
   */
-  public final String[] logHeaders = {"Time","Thread","Label","Code","Subsystem","Message"};
+  public final String[] TableHeaders = {"Time","Thread","Label","Code","Subsystem","Message"};
   public List<String> ErrorTime = new ArrayList<String>();
   public List<String> ErrorThread = new ArrayList<String>();
   public List<String> ErrorLabel = new ArrayList<String>();
@@ -72,7 +72,7 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
   public String[][] getTableData(){
     String[][] tempTable = new String[ErrorCode.size()][];
     for(int i = 0; i < ErrorCode.size(); i++){
-      //  public final String[] logHeaders = {"Time","Thread","Label","Code","Subsystem","Message"};
+      //  public final String[] TableHeaders = {"Time","Thread","Label","Code","Subsystem","Message"};
       String[] temp = { ErrorTime.get(i),
                         ErrorThread.get(i),
                         ErrorLabel.get(i),
@@ -93,7 +93,7 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
     if(ErrorTime.size() == 0){
       this.Parser(); // thread later
     }
-    JTable table = new JTable(this.getTableData(),this.logHeaders){
+    JTable table = new JTable(this.getTableData(),this.TableHeaders){
       @Override
       public boolean isCellEditable(int row, int column){
         return false;

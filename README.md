@@ -12,5 +12,8 @@ This log viewing application(written in Java so it can be platform in dependant)
 ## Bugs
  - SQLi detector is not working :(
 
-
+## Plan
+ - Every log should have it's own tab in a JTabbedPane object
+ - Each pane should have the ability to produce a pop up that will display the log name, format, SHA256 hash, MD5 hash, number of entries, etc
+ - 
   
