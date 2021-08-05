@@ -391,5 +391,10 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     };
     return table;
   }
+
+
+  public String[] getTableHeaders(){
+    return this.TableHeaders;
+  }
 }
  

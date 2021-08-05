@@ -84,7 +84,9 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
     }                
     return tempTable;
   }
-
+  public String[] getTableHeaders(){
+    return this.TableHeaders;
+  }
   public String[][] getInfoTable(int row, StatusObject s){
     return null;
   }

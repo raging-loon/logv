@@ -8,5 +8,6 @@ public interface LogFormat {
   public JTable getLogTable();
   public String[][] getInfoTable(int row, StatusObject s);
   public String[][] getTableData();
+  public String[] getTableHeaders();
 
 }

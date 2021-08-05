@@ -24,12 +24,12 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
         String arr[] = line.split(" ");
         String date = "",pid = "", command = "", user ="", client = "",msg="";
         for(int i = 0; i < arr.length; i++){
-          // get the data
+          // get the date
           if(arr[i].matches("(Mon|Tue|Wed|Thu|Fri|Sat|Sun)")){
             date = arr[i];
             for(int j = i; j < 10; j++){
               if(arr[i + 1].equals("[pid")){
-                date += " " + arr[++i];
+                date += " " + arr[i];
                 break;
               }
               date += arr[++i] + " ";
@@ -40,21 +40,26 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
           else if(arr[i].equals("[pid")){
             pid = arr[i] + " " + arr[++i];
           }
+          // get CONNECT if CONNECT is by itself
           else if(arr[i].equals("CONNECT")){
             command = arr[i];
           }
-          else if(arr[i].matches("(\\[.*\\])")){
+          // get the user if the user is all in one
+          else if(arr[i].matches("(\\[.*\\])") && !(pid.equals(""))){
             user = arr[i];
           }
-          else if(arr[i].matches("(\\[.*)") && pid != null){
+          // if the user is more than one line(e.g [user www]) and pid is 
+          // not "" than this index and the next must be the user name
+          else if(arr[i].matches("(\\[.*)") && !(pid.equals(""))){
             user = arr[i] + " " + arr[++i];
           }
-          
-          else if((command == null && user != null) && arr[i].matches("(OK|CONNECT|FAIL|LOGIN)")){
+          // double word command such as FAIL LOGIN
+          else if((command.equals("") && !(user.equals(""))) && arr[i].matches("(OK|CONNECT|FAIL|LOGIN)")){
             command = arr[i];
             if(arr[i+1].matches("(OK|CONNECT|FAIL|LOGIN|DOWNLOAD)")) 
               command += " " + arr[++i];
           }
+          // get the IP address
           else if(arr[i].equals("Client")){
             String[] temp = arr[++i].split(":");
             for(String x: temp){
@@ -63,12 +68,14 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
               }
             }
           }
-          else if(client != null && command != null && date != null){
+          // everything else is the message
+          else if(!(client.equals("") && date.equals("") && command.equals(""))){
             for(int j = i; j < arr.length; j++,i++){
               msg += arr[i];
             }
           }
           else {
+            // what could go here?
           }
 
         }
@@ -83,7 +90,10 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
     } catch(FileNotFoundException e){
       System.out.println("File: " + this.logFile + ": doesn't exist");
       System.exit(-1);
-    } catch(Exception e){
+    } catch(java.nio.file.AccessDeniedException e){
+      System.out.println("Access to file: " + this.logFile + " was denied");
+      System.exit(-1);
+    }catch(Exception e){
       e.printStackTrace();
       System.exit(-1);
     }
@@ -117,5 +127,7 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
     t.start();
   }
 
-
+  public String[] getTableHeaders(){
+    return new String[]{"Time","Ip Address","User","Command","PID","Message"};
+  }
 }

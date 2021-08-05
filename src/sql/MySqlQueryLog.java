@@ -10,8 +10,8 @@ import java.nio.file.*;
 import src.LogFormat;
 import src.LogObject;
 
-public class MySqlQueryLog extends LogObject implements LogFormat{
-  public String sqlVersion;
+public class MySqlQueryLog extends LogObject //implements LogFormat{
+  {public String sqlVersion;
   public List<String> QTime = new ArrayList<String>();
   public List<Integer> QId =  new ArrayList<Integer>();
   public List<String> QCommand = new ArrayList<String>();
