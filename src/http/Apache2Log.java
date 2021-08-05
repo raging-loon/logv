@@ -325,11 +325,11 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
 
 
   public String[][] getInfoTable(int rowNo,StatusObject s){
-    // int max = HTTPIpAddresses.size();
-    // / table;
+    // WhoisLookup needs to be put on another thread.
     if(s.doWhoisLookup == true){
       String[][]table = new String[7][];
       String[] whoisRes = MiscUtils.WhoisApiDisector(HTTPIpAddresses.get(rowNo));
+    
       table[0] =  new String[]{"Full Request", HTTPIpAddresses.get(rowNo) + " - - " +
       HTTPRequestTime.get(rowNo) + " " + 
       HTTPRequests.get(rowNo) + " " + 
@@ -348,6 +348,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
       return table;
     } else {
       String[][]table = new String[5][];
+    
       table[0] =  new String[]{"Full Request", HTTPIpAddresses.get(rowNo) + " - - " +
                   HTTPRequestTime.get(rowNo) + " " + 
                   HTTPRequests.get(rowNo) + " " + 

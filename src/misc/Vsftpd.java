@@ -22,12 +22,18 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
       List<String> allLines = Files.readAllLines(Paths.get(this.logFile));
       for(String line: allLines){
         String arr[] = line.split(" ");
-        String date = "",pid = "", command = "", user ="", client = "",msg="";
+        String date = "";
+        String pid = "";
+        String command = "";
+        String user ="";
+        String client = "";
+        String msg="";
         for(int i = 0; i < arr.length; i++){
+          
           // get the date
           if(arr[i].matches("(Mon|Tue|Wed|Thu|Fri|Sat|Sun)")){
-            date = arr[i];
-            for(int j = i; j < 10; j++){
+            date = arr[i] + " ";
+            for(int j = i;  j < 10; j++){
               if(arr[i + 1].equals("[pid")){
                 date += " " + arr[i];
                 break;
@@ -36,31 +42,44 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
 
             }
           }
-          // get the process id
+          
+          // get the process id and strip it so it looks lke 4001 and not [pid 4001]
           else if(arr[i].equals("[pid")){
-            pid = arr[i] + " " + arr[++i];
+            pid = arr[++i].substring(0, arr[i].indexOf("]"));
           }
+          
           // get CONNECT if CONNECT is by itself
-          else if(arr[i].equals("CONNECT")){
-            command = arr[i];
+          else if(arr[i].equals("CONNECT:")){
+            command = arr[i].substring(0, arr[i].indexOf(":"));
           }
+          
           // get the user if the user is all in one
           else if(arr[i].matches("(\\[.*\\])") && !(pid.equals(""))){
             user = arr[i];
           }
+
           // if the user is more than one line(e.g [user www]) and pid is 
           // not "" than this index and the next must be the user name
           else if(arr[i].matches("(\\[.*)") && !(pid.equals(""))){
             user = arr[i] + " " + arr[++i];
           }
+
           // double word command such as FAIL LOGIN
           else if((command.equals("") && !(user.equals(""))) && arr[i].matches("(OK|CONNECT|FAIL|LOGIN)")){
-            command = arr[i];
-            if(arr[i+1].matches("(OK|CONNECT|FAIL|LOGIN|DOWNLOAD)")) 
-              command += " " + arr[++i];
+            command = arr[i] + " " +  arr[++i];
+            if(command.endsWith(":"))
+              command = command.substring(0, command.indexOf(":"));
+          //  if(arr[i+1].matches("(OK|CONNECT|FAIL|LOGIN|DOWNLOAD)")) 
+            //  command += " " + arr[++i];
           }
-          // get the IP address
+          
+          
+           // get the IP address
           else if(arr[i].equals("Client")){
+            if(arr[i+1].equals("\"::1\"") || arr[i+1].equals("\"::1\",")){
+              client = arr[++i].substring(arr[i].indexOf("\"") + 1,arr[i].lastIndexOf("\""));
+              continue;
+            }
             String[] temp = arr[++i].split(":");
             for(String x: temp){
               if(x.endsWith("\"") || x.endsWith("\",")){
@@ -71,7 +90,7 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
           // everything else is the message
           else if(!(client.equals("") && date.equals("") && command.equals(""))){
             for(int j = i; j < arr.length; j++,i++){
-              msg += arr[i];
+              msg += " " + arr[i];
             }
           }
           else {
@@ -106,7 +125,24 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
 
   public JTable getLogTable(){return null;}
   public String[][] getInfoTable(int row, StatusObject s){return null;}
-  public String[][] getTableData(){return null;}
+  public String[][] getTableData(){
+    int max = this.Client.size();
+    String[][] table = new String[max][];
+    for(int i = 0; i < max; i++){
+      // {"Time","Ip Address","User","Command","PID","Message"};
+      String[] tableItem = {
+        LogDate.get(i),
+        Client.get(i),
+        User.get(i),
+        Command.get(i),
+        PID.get(i),
+        Message.get(i)
+      };
+      table[i] = tableItem;
+    }
+    
+    return table;
+  }
   public void logPrint(){
     for(int i = 0; i < this.Client.size(); i++){
       System.out.println("-------------");

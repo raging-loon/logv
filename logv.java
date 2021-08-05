@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import src.*;
 import src.http.*;
+import src.misc.Vsftpd;
 import src.sql.MySqlErrorLog;
 import src.utils.*;
 public class logv /*implements ActionListener*/{
@@ -47,10 +48,10 @@ public class logv /*implements ActionListener*/{
     // JPanel searchArea = new JPanel(new BorderLayout());
 		// JTextField area = new JTextField();logHeaders
 		// searchArea.add(area);
-		MySqlErrorLog log = new MySqlErrorLog(logFile);
+		Vsftpd log = new Vsftpd(logFile);
     log.Parser();
     
-		JTable mainTable = new JTable(log.getTableData(),log.TableHeaders){
+		JTable mainTable = new JTable(log.getTableData(),log.getTableHeaders()){
       @Override
       public boolean isCellEditable(int row, int column){
         return false;
