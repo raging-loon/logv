@@ -1,15 +1,27 @@
 package src.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
+import javax.swing.JTable;
 
-import src.http.*;
-import src.misc.*;
 import src.LogFormat;
 import src.LogObject;
+/*
+		mainTable.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent e){
+        JTable clickedOn = (JTable)e.getSource();
+        int rowNo = clickedOn.getSelectedRow(); 
+        JTable infoTable = new JTable(log.getInfoTable(rowNo,settings),d){
+          @Override
+          public boolean isCellEditable(int row, int column) { return false; }
+        };
 
+        infoPanel.add(infoTable);
+        infoTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        infoTable.getColumnModel().getColumn(1).setPreferredWidth(1000);
+			}
+		});
+ */
 public class CompareTools {
 
   public static HashMap<String, Integer> compareLogs(LogObject x, LogObject y){
@@ -44,5 +56,26 @@ public class CompareTools {
       }
     }
     return ipCounts;
+  }
+
+  public static JTable compareLogsResults(HashMap<String,Integer> x){
+    String[] tableHeaders = {"Ip Address","Frequency"};
+    String[][] tableContents = new String[x.size()][];
+    int loops = 0;
+    for(String i : x.keySet()){
+      String[] tempTableItems = {
+        i, String.valueOf(x.get(i))
+      };
+      tableContents[loops] = tempTableItems;
+      loops++;
+    }
+    JTable table = new JTable(tableContents,tableHeaders){
+      @Override
+      public boolean isCellEditable(int row, int column){
+        return false;
+      }
+    };
+
+    return table;
   }
 }

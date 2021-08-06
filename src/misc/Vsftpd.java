@@ -141,7 +141,10 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
 		table.setSize(1000,600);
     return table;
   }
-  public String[][] getInfoTable(int row, StatusObject s){return null;}
+  public String[][] getInfoTable(int row, StatusObject s){
+    return null;
+  }
+ 
   public String[][] getTableData(){
     int max = this.Client.size();
     String[][] table = new String[max][];

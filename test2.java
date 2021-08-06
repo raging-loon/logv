@@ -1,15 +1,19 @@
 // package tests;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
 import javax.swing.*;
 import src.http.*;
 import src.misc.Vsftpd;
 
 public class test2{
+  private static JFrame mainWindow = new JFrame("Logviewer");
+  private static JTabbedPane tab1 = new JTabbedPane();
+  private static HashMap<JTabbedPane, String> openTabs = new HashMap<>();
   public static void main(String argv[]){
     // List<JTabbedPane> allTabs = new ArrayList<>();
-    JFrame mainWindow = new JFrame("Logviewer");
+    // JFrame mainWindow = new JFrame("Logviewer");
     // HashMap<JTabbedPane,String> tabs = new HashMap<>();
     String file1 = "tests/weblog1.log";
     String file2 = "tests/vsftpd.log";
