@@ -8,6 +8,7 @@ This log viewing application(written in Java so it can be platform in dependant)
   - Look at Windows event logs
   - Detect Nmap scans
   - Produce frequency charts for various things
+
 ## Supported Log Files
   - Apache2/Nginx access.log
   - MySQL error.log
@@ -16,8 +17,9 @@ This log viewing application(written in Java so it can be platform in dependant)
 ## Bugs
  - SQLi detector is not working :(
 
-## Plan
- - Every log should have it's own tab in a JTabbedPane object
- - Each pane should have the ability to produce a pop up that will display the log name, format, SHA256 hash, MD5 hash, number of entries, etc
- - 
+## What's happening now
+Right now I am working on putting everything in a GUI with each log being seperated by tabs. After the GUI is up and running, I will work on more log files.
+
+## Contact
+Contact me at: jgnovak1@protonmail.com if you would like to contribute
   
