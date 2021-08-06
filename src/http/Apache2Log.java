@@ -390,6 +390,8 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
       @Override 
       public boolean isCellEditable(int row, int column){ return false; }
     };
+    table.setBounds(0,20,400,300);
+		table.setSize(400,300);
     return table;
   }
 

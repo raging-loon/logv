@@ -127,7 +127,20 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
   }
 
 
-  public JTable getLogTable(){return null;}
+  public JTable getLogTable(){
+    if(this.Client.size() == 0){
+      this.Parser();
+    }
+    JTable table = new JTable(this.getTableData(),this.getTableHeaders()){
+      @Override
+      public boolean isCellEditable(int row, int column){
+        return false;
+      }
+    };
+    table.setBounds(0,20,1000,600);
+		table.setSize(1000,600);
+    return table;
+  }
   public String[][] getInfoTable(int row, StatusObject s){return null;}
   public String[][] getTableData(){
     int max = this.Client.size();

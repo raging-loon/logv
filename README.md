@@ -8,6 +8,10 @@ This log viewing application(written in Java so it can be platform in dependant)
   - Look at Windows event logs
   - Detect Nmap scans
   - Produce frequency charts for various things
+## Supported Log Files
+  - Apache2/Nginx access.log
+  - MySQL error.log
+  - VSFTPD vsftpd.log
 
 ## Bugs
  - SQLi detector is not working :(
