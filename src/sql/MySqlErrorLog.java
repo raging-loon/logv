@@ -104,4 +104,8 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
     return table;
 
   }
+  public List<String> getIpAddresses(){return null;}
+  public int getLogSize(){
+    return this.ErrorCode.size();
+  }
 }

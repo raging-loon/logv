@@ -397,5 +397,14 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
   public String[] getTableHeaders(){
     return this.TableHeaders;
   }
+
+  public List<String> getIpAddresses(){
+    return this.HTTPIpAddresses;
+  }
+
+
+  public int getLogSize(){
+    return this.HTTPIpAddresses.size();
+  }
 }
  

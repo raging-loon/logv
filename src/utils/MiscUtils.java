@@ -38,7 +38,7 @@ public class MiscUtils {
           }
         }
       } 
-      if(name != null && Org != null){
+      if(!(name.equals("") && Org.equals(""))){
         return new String[]{name,Org};
       }
     } catch(Exception e){

@@ -119,8 +119,12 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
   }
 
 
-
-
+  public List<String> getIpAddresses(){
+    return this.Client;
+  }
+  public int getLogSize(){
+    return this.Client.size();
+  }
 
 
   public JTable getLogTable(){return null;}
