@@ -8,7 +8,7 @@ import src.*;
 import java.io.FileNotFoundException;
 import java.nio.file.*;
 import java.util.ArrayList;
-public class MySqlErrorLog extends LogObject implements LogFormat{
+public class MySqlErrorLog extends LogObject implements LogFormat,Runnable{
   /*    MySQL error.log format
     time thread [label] [err_code] [subsystem] msg
   */
@@ -107,5 +107,12 @@ public class MySqlErrorLog extends LogObject implements LogFormat{
   public List<String> getIpAddresses(){return null;}
   public int getLogSize(){
     return this.ErrorCode.size();
+  }
+  public void run(){
+    this.Parser();
+  }
+  public void start(){
+    Thread t = new Thread(this);
+    t.start();
   }
 }
