@@ -11,4 +11,5 @@ public interface LogFormat {
   public String[] getTableHeaders();
   public List<String> getIpAddresses();
   public int getLogSize();
+  // public boolean parserSuccess();
 }

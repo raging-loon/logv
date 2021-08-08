@@ -155,11 +155,21 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     } //catch(FileNotFoundException e){
     //   System.out.println("File: " + ParserLogFile + ": not found");
     //   System.exit(-1);}
-     catch(Exception e){
-      System.out.println("Sorry, something went wrong"); // fix
-      e.printStackTrace();
-      System.exit(-1);
-    } 
+      catch(java.io.FileNotFoundException e){
+        System.out.println("File: " + this.logFile + ": not found");
+        return;
+      } catch(java.nio.file.AccessDeniedException e){
+        System.out.println("Access to " + logFile +" was denied");
+        return;
+      } catch(java.io.IOException e){
+        System.out.println("Error: could not read from " + logFile + ": may be a directory");
+        return;
+      }
+      catch(Exception e){
+        System.out.println("Sorry, something went wrong"); // fix
+        e.printStackTrace();
+        System.exit(-1);
+    }
   }
   
   
