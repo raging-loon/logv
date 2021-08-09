@@ -51,7 +51,7 @@ public class logv implements ActionListener, Runnable{
 
     mainArea.setBounds(0,20,400,300);
     mainArea.setSize(400,300);
-
+    
     mainWindow.add(mainArea,BorderLayout.CENTER);
     mainWindow.add(mainMenu,BorderLayout.NORTH);
     mainWindow.setSize(1000,600);
@@ -61,22 +61,6 @@ public class logv implements ActionListener, Runnable{
  
  
   public void actionPerformed(ActionEvent e){
-    // kind of a lame workaround, should probably fix this.
-    /*
-    if(e.getSource() == newApache2){
-      JOptionPane logInfo = new JOptionPane("Log Format Chooser");
-      JFileChooser jfc = new JFileChooser();
-      jfc.showOpenDialog(null);
-      File fileField = jfc.getSelectedFile();
-      GlobalObjectStatus = "newtab";
-      GlobalObjectArguments.clear();
-      GlobalObjectArguments.add(fileField);
-      GlobalObjectArguments.add("apache2");
-
-      Thread t = new Thread(this);
-      t.start();
-
-    }*/
     if(e.getSource() instanceof JMenuItem){
       String logFormat = "";
       File logFile;
