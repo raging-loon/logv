@@ -14,9 +14,10 @@ This log viewing application(written in Java so it can be platform in dependant)
   - MySQL error.log
   - VSFTPD vsftpd.log
 
-## Bugs
- - SQLi detector is not working :(
-
+## Installation
+The JAR file will be located at https://github.com/raging-loon/logv-jar
+Follow the installation steps for you operating system. 
+If you already are familiar with Java, you know what to do.
 ## What's happening now
 Right now I am working on putting everything in a GUI with each log being seperated by tabs. After the GUI is up and running, I will work on more log files.
 

@@ -1,11 +1,13 @@
 import src.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+// import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.*;
+
 
 public class logv implements ActionListener, Runnable{
   private static JFrame mainWindow = new JFrame("LogViewer");
@@ -14,35 +16,42 @@ public class logv implements ActionListener, Runnable{
 
   private static JMenuBar mainMenu = new JMenuBar();
   private static JTabbedPane mainArea = new JTabbedPane();
-  private JMenuItem file = new JMenuItem("Open"); 
+  private JMenuItem newApache2 = new JMenuItem("New Apache2 Log");
+  private JMenuItem newMysqlErr = new JMenuItem("New MySql Error ");
+  private JMenuItem newVsftpd = new JMenuItem("New VSFTPD Log"); 
   private static ParserManager parserManager = new ParserManager();
   private String GlobalObjectStatus = "";
-  private List<String> GlobalObjectArguments = new ArrayList<>();
-  synchronized private void addNewTab(String logFile, String logFormat){
-    System.out.println("adding new tab");
-    JComponent panel = new JPanel();
-    System.out.println("Made JPANEL");
-    LogObject log = parserManager.logParser(logFile, logFormat);
-    if(log == null){
+  private List<Object> GlobalObjectArguments = new ArrayList<>();
+  synchronized private void addNewTab(File logFile, String logFormat){
+    JComponent panel = new JPanel(new BorderLayout());
+
+    LogObject log = parserManager.logParser(logFile, new String(logFormat));
+    // try{
+    //    wait();
+    // } catch(Exception e){
+
+    // } 
+    if(log.equals(null)){
       System.out.println("NULL");
       return;
       // don't add a new tab, file doesn't exist.
     }
-    JScrollPane sPane = new JScrollPane(((LogFormat)log).getLogTable());
+    JTable table = ((LogFormat)log).getLogTable();
+    table.setSize(1000,300);
+    JScrollPane sPane = new JScrollPane(table);
     
     panel.add(sPane,BorderLayout.NORTH);
+    panel.setSize(1000,300);
     panel.setVisible(true);
-    panel.setSize(400,300);
     openTabs.put(panel,log);
-    mainArea.addTab(logFile,panel);
-    System.out.println(logFile);
-    System.out.println(log.getLogFile());
+    mainArea.addTab(logFile.getName(),panel);
   }
  
   private  void prepareWindows(){
 
     mainArea.setBounds(0,20,400,300);
     mainArea.setSize(400,300);
+
     mainWindow.add(mainArea,BorderLayout.CENTER);
     mainWindow.add(mainMenu,BorderLayout.NORTH);
     mainWindow.setSize(1000,600);
@@ -53,26 +62,46 @@ public class logv implements ActionListener, Runnable{
  
   public void actionPerformed(ActionEvent e){
     // kind of a lame workaround, should probably fix this.
-
-    if(e.getSource() == file){
+    /*
+    if(e.getSource() == newApache2){
       JOptionPane logInfo = new JOptionPane("Log Format Chooser");
-      JTextField optionField = new JTextField();
-      optionField.setText("Enter File Format");
-      logInfo.showInputDialog(mainWindow,optionField);
       JFileChooser jfc = new JFileChooser();
-      int status = jfc.showSaveDialog(null);
-      String fileField;
-      if(status == JFileChooser.APPROVE_OPTION)  fileField = jfc.getSelectedFile().getAbsolutePath();
-      else  fileField = jfc.getSelectedFile().getAbsolutePath();
+      jfc.showOpenDialog(null);
+      File fileField = jfc.getSelectedFile();
       GlobalObjectStatus = "newtab";
       GlobalObjectArguments.clear();
-      System.out.println(fileField);
       GlobalObjectArguments.add(fileField);
-      GlobalObjectArguments.add(optionField.getText().toString());
+      GlobalObjectArguments.add("apache2");
 
       Thread t = new Thread(this);
       t.start();
 
+    }*/
+    if(e.getSource() instanceof JMenuItem){
+      String logFormat = "";
+      File logFile;
+      if(e.getSource() == newApache2){
+        logFormat = "apache2";
+
+      } else if( e.getSource() == newMysqlErr){
+        logFormat = "mysql_err";
+      } else if(e.getSource() == newVsftpd){
+        logFormat = "vsftpd";
+      } else {
+        System.out.println("NO");
+        // not one of the accepted JMenuItems, break out of this
+        // should fix this later.
+        return;
+      }
+      JFileChooser jfc = new JFileChooser();
+      jfc.showOpenDialog(null);
+      logFile = jfc.getSelectedFile();
+      GlobalObjectStatus = "newtab";
+      GlobalObjectArguments.clear();
+      GlobalObjectArguments.add(logFile);
+      GlobalObjectArguments.add(logFormat);
+      Thread t  = new Thread(this);
+      t.start();
     }
   }
  
@@ -80,16 +109,21 @@ public class logv implements ActionListener, Runnable{
     System.out.println("New thread");
     if(GlobalObjectStatus.equals("newtab")){
       if(GlobalObjectArguments.isEmpty()){
-
       }
-      this.addNewTab(GlobalObjectArguments.get(0),GlobalObjectArguments.get(1));
+
+      this.addNewTab((File)GlobalObjectArguments.get(0),GlobalObjectArguments.get(1).toString());
+      GlobalObjectArguments.clear();
+      GlobalObjectStatus = "";
     }
   }
   public void addComponents(){
     JMenu menu = new JMenu("File");
-    file.addActionListener(this);
-    
-    menu.add(file);
+    newApache2.addActionListener(this);
+    menu.add(newApache2);
+    newMysqlErr.addActionListener(this);
+    menu.add(newMysqlErr);
+    newVsftpd.addActionListener(this);
+    menu.add(newVsftpd);
     mainMenu.add(menu);
   }
   public logv(){
