@@ -16,7 +16,7 @@ public class ParserManager{
     this.logFile = "";
     this.logFormat = "";
   }
-
+  
   public boolean fileExistsChecker(String logFile){
     File file = new File(logFile);
     System.out.println(file.getAbsolutePath());
@@ -32,8 +32,10 @@ public class ParserManager{
       System.out.println("File doesn't exist");
       return null;
     }
+
+
     if(logFormat.equals("apache2") || logFormat.equals("nginx")){
-      System.out.println("GOT WEB LOG");
+      // System.out.println("GOT WEB LOG");
       Apache2Log log = new Apache2Log(logFile.getAbsolutePath());
       log.Parser();
       // notifyAll();
@@ -49,6 +51,7 @@ public class ParserManager{
       log.Parser();
       return log;
     }
+    
     return null;
   }
 

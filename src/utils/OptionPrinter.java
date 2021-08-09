@@ -1,7 +1,7 @@
 package src.utils;
 
 public class OptionPrinter {
-  public OptionPrinter(String version){
+  public static void Printer(String version){
     System.out.println(
       "LogViewer " + version + "\n" + 
       "usage: <log format> <filename> <commands>\n" +

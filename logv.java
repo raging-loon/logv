@@ -114,7 +114,12 @@ public class logv implements ActionListener, Runnable{
     prepareWindows();
   }
   public static void main(String[] args){
+    if(args.length != 0){
+      logvcli l = new logvcli();
+      l.main(args);
+      System.exit(0);
+    }
     logv main = new logv();
-    
+     
   }
 }
