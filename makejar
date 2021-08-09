@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+jar -cmvf logv.mf logv.jar logv.class logv\$1.class \
+src/LogFormat.class src/LogObject.class \
+src/ParserManager.class src/StatusObject.class \
+src/http/Apache2Log.class src/http/Apache2Log\$1.class \
+src/sql/MySqlErrorLog.class src/sql/MySqlErrorLog\$1.class \
+src/misc/Vsftpd.class /src/misc/Vsftpd\$1.class \
+src/utils/AttackIdentifier.class /src/utils/CompareTools.class \
+src/utils/MiscUtils.class src/utils/OptionPrinter.class 

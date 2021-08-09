@@ -20,7 +20,7 @@ Follow the installation steps for you operating system.
 If you already are familiar with Java, you know what to do.
 ## What's happening now
 Right now I am working on putting everything in a GUI with each log being seperated by tabs. After the GUI is up and running, I will work on more log files.
-
+![https://github.com/raging-loon/logv/blob/main/screenshots/screenshot1.png]()
 ## Contact
 Contact me at: jgnovak1@protonmail.com if you would like to contribute
   

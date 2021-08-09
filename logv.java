@@ -88,7 +88,6 @@ public class logv implements ActionListener, Runnable{
       } else if(e.getSource() == newVsftpd){
         logFormat = "vsftpd";
       } else {
-        System.out.println("NO");
         // not one of the accepted JMenuItems, break out of this
         // should fix this later.
         return;
