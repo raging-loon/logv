@@ -7,10 +7,7 @@ public class OptionPrinter {
       "usage: <log format> <filename> <commands>\n" +
       "LOG FORMATS\n" + 
       "\tWhat type of logs\n" +
-      "\t-apache : Apache2 logs(access.log)\n" +
-      "\t-nginx : Nginx Logs(access.log, error.log)\n" +
-      "\t-mysql : MySQL logs(query.log)\n" +
-      "\t-mysql-err : MySql error.log\n" +
+      "\t--list : list all log formats currently available\n" +
       "\t-f : required, specify log file\n" +
       "COMMANDS\n" +
       "\tIf no argument is given, the log will simply be printed\n" +
@@ -22,6 +19,16 @@ public class OptionPrinter {
       "\tlogv -apache -f /var/log/apache2/access.log\n" +
       "\tlogv -nginx  -f /var/log/nginx/access.log -ip-counter\n" +
       "\tlogv -apache -f /var/log/apache2/access.log -ip-count 127.0.0.1"
+    );
+  }
+  public static void SupportedLogFormatPrinter(String version){
+    System.out.printf(
+      "Logs currently supported by LogViewer v" + version + ":" +
+      "\n\tApache2/Nginx access.log, -apache2 or -nginx" +
+      "\n\tMySQl Error logs, error.log, -mysql_err" +
+      "\n\tVSFTPD log, vsftpd.log, -vsftpd\n" +
+      "\n" + 
+      "\nIf you wish to contribute to this project, contact me at jgnovak1@protonmail.com" 
     );
   }  
 }

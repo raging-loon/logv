@@ -1,5 +1,6 @@
 package src.utils;
 import java.net.URL;
+import java.util.HashMap;
 import java.io.*;
 public class MiscUtils {
   public static String getStatusCodeMessage(int x){
@@ -45,5 +46,11 @@ public class MiscUtils {
       return null;
     }
     return null;
+  }
+
+  public static void printIpCountResults(HashMap<String,Integer> x){
+    for(String addr: x.keySet()){
+      System.out.println(addr + ": " + x.get(addr));
+    }
   }
 }

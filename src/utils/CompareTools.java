@@ -6,22 +6,7 @@ import javax.swing.JTable;
 
 import src.LogFormat;
 import src.LogObject;
-/*
-		mainTable.addMouseListener(new MouseAdapter(){
-			public void mouseClicked(MouseEvent e){
-        JTable clickedOn = (JTable)e.getSource();
-        int rowNo = clickedOn.getSelectedRow(); 
-        JTable infoTable = new JTable(log.getInfoTable(rowNo,settings),d){
-          @Override
-          public boolean isCellEditable(int row, int column) { return false; }
-        };
 
-        infoPanel.add(infoTable);
-        infoTable.getColumnModel().getColumn(0).setPreferredWidth(100);
-        infoTable.getColumnModel().getColumn(1).setPreferredWidth(1000);
-			}
-		});
- */
 public class CompareTools {
 
   public static HashMap<String, Integer> compareLogs(LogObject x, LogObject y){

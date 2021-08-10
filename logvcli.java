@@ -1,3 +1,4 @@
+import src.CLIManager;
 import src.http.*;
 import src.misc.*;
 import src.misc.*;
@@ -19,37 +20,50 @@ public class logvcli {
     }
     // vv DEBUG
     // System.out.println("First arg is: " + args[0]);
-    String logFormatFlag = "";
-    String logFileFlag = "";
-    int ipCountsFlag = -1;
-    // int XMLOutputFlag = -1
-    String spcfcIpCountsFlag = "";
     
+    CLIManager cliManager = new CLIManager();
+
     // a nice c++ struct would go nicely here 
     for(int i = 0; i < args.length; i++){
+      String logFile = "", logFormat = "";
       if(args[i].matches("-(apache2|nginx|mysql_err|vsftpd)")){
         // take the "-" off of it(-nginx -> nginx)
-        logFormatFlag = args[i].substring(1);
+        logFormat = args[i].substring(1);
       }
       else if(args[i].equals("-f")){
           try{
-            logFileFlag = args[++i];
+            logFile = args[++i];
           } catch(IndexOutOfBoundsException e){
             argRequiredError("-f");
         }
       }
       
       else if(args[i].equals("-ip-counter")){
-        ipCountsFlag = 1;
+        cliManager.setIpCountsFlag();
       }
       else if(args[i].equals("ip-counts")){
         try{
-          spcfcIpCountsFlag = args[++i];
+          cliManager.setSpecIpCountsFlag(args[++i]);
         } catch(IndexOutOfBoundsException e){
           argRequiredError("ip-counts");
         }
       }
+      else if(args[i].equals("--list")){
+        cliManager.setDoList();
+      }
+      else if(args[i].equals("--info")){
+        cliManager.infoFlag = 0;
+      }
+      else {
+
+      }
+      if(logFile.equals("") || logFormat.equals("")){
+
+      } else {
+        cliManager.logInfo.put(logFile,logFormat);
+      }
     }
-    
+    cliManager.Start();
+
   }
 }
