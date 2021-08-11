@@ -87,7 +87,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
         String HTTPlen = new String("");
         String Referer = new String("");
         for(int i = 0; i < arr.length; i++){
-
           // get the actual request
           // vv better looking way of doing this?
           if(arr[i].equals("\"GET")  || arr[i].equals("\"POST")   || arr[i].equals("\"OPTIONS") || arr[i].equals("\"PUT")
@@ -111,11 +110,16 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
           }
           // Get user agent
           
-          else if(arr[i].matches("(\"Mozilla/\\d.\\d)") || arr[i].matches("(\"Mozilla/\\d.\\d\")")){
+          else if((arr[i].matches("(\"Mozilla/\\d.\\d.*)")|| arr[i].matches("(\"sqlmap/.*pip)")) && !HTTPRequest.equals("")){
             try{
               HTTPUserAgent += arr[i];
-              for(int j = 0; j < arr.length; j++){
-                HTTPUserAgent += arr[++i] + " ";
+              int max = arr.length;
+              // some logs have a "-" right after the user agent
+              if(arr[arr.length] == "\"-\""){
+                max--;
+              }
+              for(int j = 0; j < max; j++){
+                HTTPUserAgent += " " + arr[++i];
               }
             } catch(Exception e){}
           }
@@ -275,6 +279,28 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     if(!silent) System.out.println("Total possible sqli attacks: " + occurences);
     return found;
   }
+
+  // look for "sqlmap/\d.\d.\d#pip (http://sqlmap.org)"
+  public boolean SQLMapUADetector(boolean silent){
+    int occurences = 0;
+    boolean found = false;
+    for(int i = 0; i < HTTPUserAgents.size(); i++){
+      if(HTTPUserAgents.get(i).matches(".*sqlmap.*")){
+        found = true;
+        occurences++;
+        if(!silent){
+          System.out.println("-------------------------");
+          System.out.println("Ip Address: " + HTTPIpAddresses.get(i));
+          System.out.println("Time: " + HTTPRequestTime.get(i));
+        }
+      }
+    }
+    if(!silent) System.out.println("Total SQLMap user agents found: " + occurences);
+    return found;
+  }
+
+
+
   public boolean PathTraversalDetector(boolean silent){
     int occurences = 0;
     boolean found = false;

@@ -8,6 +8,8 @@ public class OptionPrinter {
       "LOG FORMATS\n" + 
       "\tWhat type of logs\n" +
       "\t--list : list all log formats currently available\n" +
+      "\t--info : show info about the log\n" +
+      "\t\t--nonsilent : show additional information"+
       "\t-f : required, specify log file\n" +
       "COMMANDS\n" +
       "\tIf no argument is given, the log will simply be printed\n" +

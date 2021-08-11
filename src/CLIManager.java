@@ -1,5 +1,5 @@
 package src;
-
+import src.*;
 import src.http.*;
 import src.misc.*;
 import src.misc.*;
@@ -14,6 +14,8 @@ public class CLIManager {
   public String specIpCountsFlag = "";
   public int doList = -1;
   public int infoFlag = -1;
+  public int infoFlagNonSilent = -1;
+  public int logPrintFlag = -1;
   // setters 
   public HashMap<String,String> logInfo = new HashMap<>();
   public List<LogObject> logs = new ArrayList<>();
@@ -34,8 +36,9 @@ public class CLIManager {
     } 
     else{
       ParserManager pm = new ParserManager();
-      for( String logFormat : logInfo.keySet() ){
-        logs.add(pm.logParser(new File(logInfo.get(logFormat)), logFormat));
+      for( String logFile : logInfo.keySet() ){
+        // File file = new File(logInfo.get(logFormat));
+        logs.add(pm.logParser(new File(logFile), logInfo.get(logFile)));
       }
       for(int i = 0; i < logs.size(); i++){
         if(logs.get(i) == null){
@@ -52,10 +55,13 @@ public class CLIManager {
         System.out.println("Entries: " + ((LogFormat)logs.get(i)).getLogSize());
         if(logs.get(i).getLogFormat().matches("apache2|nginx")){
           Apache2Log log = (Apache2Log)logs.get(i);
-          System.out.println("Nmap Scan Detected? " + log.nmapScanSearch(true));
-          System.out.println("Path Traversal Detected? " + log.PathTraversalDetector(true));
-          System.out.println("XSS Detected? " + log.XssDetector(true));
-        } 
+          boolean silent = infoFlagNonSilent > -1 ? false : true;
+          System.out.println("Nmap Scan Detected? " + log.nmapScanSearch(silent));
+          System.out.println("Path Traversal Detected? " + log.PathTraversalDetector(silent));
+          System.out.println("XSS Detected? " + log.XssDetector(silent));
+        } else {
+
+        }
       }
       System.exit(0);
     }
@@ -67,6 +73,11 @@ public class CLIManager {
         } else {
           System.out.println("Log Format" + logs.get(i).getLogFormat() + ": doesn't support IP indexing");
         }
+      }
+    }
+    else if(logPrintFlag != -1){
+      for(int i = 0; i < logs.size(); i++){
+        ((LogFormat)logs.get(i)).logPrint();
       }
     }
 

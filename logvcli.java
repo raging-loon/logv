@@ -1,8 +1,4 @@
 import src.CLIManager;
-import src.http.*;
-import src.misc.*;
-import src.misc.*;
-import src.sql.*;
 import src.utils.OptionPrinter;
 /**
  * This class contains everything needed to run in a headless environment or
@@ -12,6 +8,12 @@ public class logvcli {
   public void argRequiredError(String arg){
     System.out.println("Argument " + arg + ": requires an argument");
     System.exit(-1);
+  }
+  public void argNotSupportedError(String arg){
+    System.out.println("LogViewer: unrecognized argument: " + arg);
+    System.out.println("See the output of logv -h for a summary of options");
+    System.exit(-1);
+
   }
   public void main(String[] args){
     if(args[0].matches("(-h|--help)")){
@@ -24,9 +26,10 @@ public class logvcli {
     CLIManager cliManager = new CLIManager();
 
     // a nice c++ struct would go nicely here 
+
+    String logFile = "", logFormat = "";
     for(int i = 0; i < args.length; i++){
-      String logFile = "", logFormat = "";
-      if(args[i].matches("-(apache2|nginx|mysql_err|vsftpd)")){
+      if(args[i].matches(".*(apache2|nginx|mysql_err|vsftpd)")){
         // take the "-" off of it(-nginx -> nginx)
         logFormat = args[i].substring(1);
       }
@@ -54,13 +57,20 @@ public class logvcli {
       else if(args[i].equals("--info")){
         cliManager.infoFlag = 0;
       }
-      else {
-
+      else if(args[i].equals("--nonsilent")){
+        cliManager.infoFlagNonSilent = 1;
+      } 
+      else if(args[i].equals("--log-print")){
+        cliManager.logPrintFlag = 1;
       }
-      if(logFile.equals("") || logFormat.equals("")){
-
-      } else {
+      else {
+        argNotSupportedError(args[i]);
+      }
+      if(!(logFile.equals("") || logFormat.equals(""))){
+      
         cliManager.logInfo.put(logFile,logFormat);
+        logFile = "";
+        logFormat = "";
       }
     }
     cliManager.Start();
