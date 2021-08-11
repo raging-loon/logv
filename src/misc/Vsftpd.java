@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import src.*;
 
@@ -185,5 +186,9 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
 
   public String[] getTableHeaders(){
     return new String[]{"Time","Ip Address","User","Command","PID","Message"};
+  }
+
+  public JPanel getLogPanel(){
+    return null;
   }
 }

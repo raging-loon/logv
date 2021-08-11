@@ -1,8 +1,12 @@
 package src.utils;
 
 import java.util.HashMap;
+import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
 
 import src.LogFormat;
 import src.LogObject;
@@ -63,4 +67,21 @@ public class CompareTools {
 
     return table;
   }
+
+
+  public static JDialog ipLogResults(List<LogObject> logs,JFrame Main){
+    JDialog jp = new JDialog(Main, "IP Log Comparison Results",true);
+    
+    if(logs.size() > 2){
+      JTextPane p = new JTextPane();
+      p.setText("Too Many Log files");
+      jp.add(p);
+    } else {
+      jp.add(compareLogsResults(compareLogs(logs.get(0),logs.get(1))));
+    }
+    jp.setSize(300,300);
+    jp.setVisible(true);
+    return jp;
+  }
+  
 }

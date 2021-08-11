@@ -9,7 +9,7 @@ public class OptionPrinter {
       "\tWhat type of logs\n" +
       "\t--list : list all log formats currently available\n" +
       "\t--info : show info about the log\n" +
-      "\t\t--nonsilent : show additional information"+
+      "\t\t--nonsilent : show additional information\n"+
       "\t-f : required, specify log file\n" +
       "COMMANDS\n" +
       "\tIf no argument is given, the log will simply be printed\n" +
@@ -17,6 +17,9 @@ public class OptionPrinter {
       "\t-ip-counter : print all ip addresses found file as well as the number of times they show up\n" + 
       "\t-ip-count <ip address> : print the number of times the given IP address shows up\n" +
       "\t\t--time : print the times at which the ip address showed up\n" +
+      "\t--log-print : print the log, can be redirected, not as \"pretty\" as the GUI\n" +
+      "\t--xml <file> : try and save the output of into an xml file.\n" +
+      "\t--compare : compare logs(only 2 logs at a time)" +
       "EXAMPLES\n" + 
       "\tlogv -apache -f /var/log/apache2/access.log\n" +
       "\tlogv -nginx  -f /var/log/nginx/access.log -ip-counter\n" +

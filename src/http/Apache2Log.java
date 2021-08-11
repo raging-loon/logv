@@ -2,8 +2,12 @@ package src.http;
 
 import java.util.*;
 
-import javax.swing.JTable;
+import javax.swing.*;
 
+
+// import javax.swing.JTable;
+import java.awt.BorderLayout;
+import java.awt.event.*;
 import java.nio.file.*;
 import src.*;
 import src.utils.AttackIdentifier;
@@ -67,8 +71,39 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
   
   public Apache2Log(String logFile){ this.logFile = logFile; this.logFormat="apache2";}
 
+  public String[] getTableHeaders(){
+    return this.TableHeaders;
+  }
+
+  public List<String> getIpAddresses(){
+    return this.HTTPIpAddresses;
+  }
+  public int getIpCounts(String ipAddr){
+    int counter = 0;
+    for(String addr: HTTPIpAddresses){
+      if(addr.equals(ipAddr)){
+        counter++;
+      }
+    }
+    return counter;
+  }
 
 
+  public int getLogSize(){
+    return this.HTTPIpAddresses.size();
+  }
+  public JTable getLogTable(){
+    if(this.HTTPIpAddresses.size() == 0){
+      this.start();
+    }
+    JTable table = new JTable(this.getTableData(),this.TableHeaders){
+      @Override 
+      public boolean isCellEditable(int row, int column){ return false; }
+    };
+    table.setBounds(0,20,400,300);
+		table.setSize(400,300);
+    return table;
+  }
   public void Parser(){
     try{
       List<String> allLines = Files.readAllLines(Paths.get(this.logFile));
@@ -112,7 +147,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
           
           else if((arr[i].matches("(\"Mozilla/\\d.\\d.*)")|| arr[i].matches("(\"sqlmap/.*pip)")) && !HTTPRequest.equals("")){
             try{
-              HTTPUserAgent += arr[i];
+              HTTPUserAgent = arr[i];
               int max = arr.length;
               // some logs have a "-" right after the user agent
               if(arr[arr.length] == "\"-\""){
@@ -121,7 +156,8 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
               for(int j = 0; j < max; j++){
                 HTTPUserAgent += " " + arr[++i];
               }
-            } catch(Exception e){}
+            } catch(Exception e){
+            }
           }
           // get the time of the request
           else if(arr[i].matches("(\\[\\d{1,}/\\w\\w\\w/\\d\\d\\d\\d:\\d{1,}:\\d{1,}:\\d{1,})")){
@@ -190,16 +226,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     return IpCount;
   }
 
-  public int getIpCounts(String ipAddr){
-    int counter = 0;
-    for(String addr: HTTPIpAddresses){
-      if(addr.equals(ipAddr)){
-        counter++;
-      }
-    }
-    return counter;
-  }
-
   
   public void PrintIpCounts(){
     HashMap<String,Integer> ipCount = getIpCounts();
@@ -232,7 +258,24 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
       return true;
     else return false;
   }
-
+  private JTable nmapScanTable(){
+    
+    String[] headers = {"Ip Address","Request","Time"};
+    String[][] results = new String[HTTPIpAddresses.size()][];
+    for(int i = 0; i < HTTPIpAddresses.size();i++){
+      if(nmapScanSearch(i) == true){
+        String[] temp = {
+          HTTPIpAddresses.get(i),
+          HTTPRequests.get(i),
+          HTTPRequestTime.get(i)
+        };
+        results[i] = temp;
+      }
+    }
+    JTable table = new JTable(results,headers);
+    table.setSize(400,300);
+    return table;
+  }
 
 
 
@@ -418,31 +461,27 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     t.start();
   }
 
-  public JTable getLogTable(){
-    if(this.HTTPIpAddresses.size() == 0){
-      this.start();
-    }
-    JTable table = new JTable(this.getTableData(),this.TableHeaders){
-      @Override 
-      public boolean isCellEditable(int row, int column){ return false; }
-    };
-    table.setBounds(0,20,400,300);
-		table.setSize(400,300);
-    return table;
-  }
 
 
-  public String[] getTableHeaders(){
-    return this.TableHeaders;
-  }
-
-  public List<String> getIpAddresses(){
-    return this.HTTPIpAddresses;
-  }
-
-
-  public int getLogSize(){
-    return this.HTTPIpAddresses.size();
+  public JPanel getLogPanel(){
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setSize(1000,300);
+    panel.setVisible(true);
+    JMenuBar webLogMenu = new JMenuBar();
+    JMenu DetectionTools = new JMenu("Detection Tools");
+    webLogMenu.setSize(20,1000);
+    JMenuItem nmapScanD = new JMenuItem("Nmap Scan Detector");
+    nmapScanD.addMouseListener(new MouseAdapter(){
+      public void MouseClicked(MouseEvent e){
+        JDialog jd = new JDialog();
+        jd.add(new JScrollPane(nmapScanTable()));
+      }
+    });
+    DetectionTools.add(nmapScanD);
+    webLogMenu.add(DetectionTools);
+    panel.add(webLogMenu,BorderLayout.NORTH);
+    panel.add(this.getLogTable());
+    return panel;
   }
 }
  

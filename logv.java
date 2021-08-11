@@ -1,4 +1,6 @@
 import src.*;
+import src.utils.CompareTools;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -16,14 +18,16 @@ public class logv implements ActionListener, Runnable{
 
   private static JMenuBar mainMenu = new JMenuBar();
   private static JTabbedPane mainArea = new JTabbedPane();
+  private JMenu menu2 = new JMenu("Compare");
+
   private JMenuItem newApache2 = new JMenuItem("New Apache2 Log");
   private JMenuItem newMysqlErr = new JMenuItem("New MySql Error ");
   private JMenuItem newVsftpd = new JMenuItem("New VSFTPD Log"); 
+  private JMenuItem compare = new JMenuItem("Compare");
   private static ParserManager parserManager = new ParserManager();
   private String GlobalObjectStatus = "";
   private List<Object> GlobalObjectArguments = new ArrayList<>();
   synchronized private void addNewTab(File logFile, String logFormat){
-    JComponent panel = new JPanel(new BorderLayout());
 
     LogObject log = parserManager.logParser(logFile, new String(logFormat));
     // try{
@@ -32,19 +36,19 @@ public class logv implements ActionListener, Runnable{
 
     // } 
     if(log.equals(null)){
-      System.out.println("NULL");
+      // System.out.println("NULL");
       return;
       // don't add a new tab, file doesn't exist.
     }
     JTable table = ((LogFormat)log).getLogTable();
     table.setSize(1000,300);
     JScrollPane sPane = new JScrollPane(table);
-    
+    JComponent panel = ((LogFormat)log).getLogPanel();
     panel.add(sPane,BorderLayout.NORTH);
     panel.setSize(1000,300);
     panel.setVisible(true);
     openTabs.put(panel,log);
-    mainArea.addTab(logFile.getName(),panel);
+    mainArea.addTab(logFile.getAbsolutePath(),panel);
   }
  
   private  void prepareWindows(){
@@ -61,7 +65,7 @@ public class logv implements ActionListener, Runnable{
  
  
   public void actionPerformed(ActionEvent e){
-    if(e.getSource() instanceof JMenuItem){
+    if(e.getSource() instanceof JMenuItem && e.getSource() != compare){
       String logFormat = "";
       File logFile;
       if(e.getSource() == newApache2){
@@ -86,10 +90,23 @@ public class logv implements ActionListener, Runnable{
       Thread t  = new Thread(this);
       t.start();
     }
+    else if(e.getSource() == compare){
+      System.out.println("COMPARE");
+      List<LogObject> x = new ArrayList<>();
+      for(JComponent y: openTabs.keySet()){
+        x.add(openTabs.get(y));
+        
+      }
+      System.out.println(x.get(0).getLogFile());
+      JDialog popup = new JDialog(mainWindow,"Log Comparison Results",true);
+      popup.add(CompareTools.compareLogsResults(CompareTools.compareLogs(x.get(0), x.get(1))));
+      popup.setSize(300,300);
+      popup.setVisible(true);
+    }
   }
  
   public void run(){
-    System.out.println("New thread");
+    // System.out.println("New thread");
     if(GlobalObjectStatus.equals("newtab")){
       if(GlobalObjectArguments.isEmpty()){
       }
@@ -107,7 +124,11 @@ public class logv implements ActionListener, Runnable{
     menu.add(newMysqlErr);
     newVsftpd.addActionListener(this);
     menu.add(newVsftpd);
+    compare.addActionListener(this);
+    menu2.add(compare);
     mainMenu.add(menu);
+    mainMenu.add(menu2);
+
   }
   public logv(){
     addComponents();

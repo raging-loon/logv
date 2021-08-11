@@ -19,7 +19,7 @@ public class ParserManager{
   
   public boolean fileExistsChecker(String logFile){
     File file = new File(logFile);
-    System.out.println(file.getAbsolutePath());
+    // System.out.println(file.getAbsolutePath());
     File realFile = new File(file.getAbsolutePath());
     if(!realFile.exists()){
       return true;

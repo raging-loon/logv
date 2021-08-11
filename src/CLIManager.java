@@ -16,6 +16,7 @@ public class CLIManager {
   public int infoFlag = -1;
   public int infoFlagNonSilent = -1;
   public int logPrintFlag = -1;
+  public int compareFlag = -1;
   // setters 
   public HashMap<String,String> logInfo = new HashMap<>();
   public List<LogObject> logs = new ArrayList<>();
@@ -79,6 +80,17 @@ public class CLIManager {
       for(int i = 0; i < logs.size(); i++){
         ((LogFormat)logs.get(i)).logPrint();
       }
+    }
+    else if(compareFlag != -1){
+      if(logs.size() != 2){
+        System.out.println("Must have two log files");
+        System.exit(-1);
+      }
+      HashMap<String, Integer> ipCompareRes = CompareTools.compareLogs(logs.get(0), logs.get(1));
+      for(String addr: ipCompareRes.keySet()){
+        System.out.println(addr + ": " + ipCompareRes.get(addr));
+      }
+
     }
 
   }

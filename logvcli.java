@@ -63,6 +63,9 @@ public class logvcli {
       else if(args[i].equals("--log-print")){
         cliManager.logPrintFlag = 1;
       }
+      else if(args[i].equals("--compare")){
+        cliManager.compareFlag = 0;
+      }
       else {
         argNotSupportedError(args[i]);
       }
