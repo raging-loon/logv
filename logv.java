@@ -39,6 +39,9 @@ public class logv implements ActionListener, Runnable{
     // } 
     if(log.equals(null)){
       // System.out.println("NULL");
+      JOptionPane jo = new JOptionPane();
+      jo.showMessageDialog(mainWindow, "File doesn't exist", "Message", JOptionPane.ERROR_MESSAGE);
+
       return;
       // don't add a new tab, file doesn't exist.
     }
