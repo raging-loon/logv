@@ -1,5 +1,6 @@
 package src;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import java.util.List;
@@ -23,5 +24,5 @@ public interface LogFormat{
   // get the log size for for loops
   public int getLogSize();
   // public boolean parserSuccess();
-  public JPanel getLogPanel();
+  public JPanel getLogPanel(JFrame frame);
 }

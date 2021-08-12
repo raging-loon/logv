@@ -27,6 +27,8 @@ public class logv implements ActionListener, Runnable{
   private static ParserManager parserManager = new ParserManager();
   private String GlobalObjectStatus = "";
   private List<Object> GlobalObjectArguments = new ArrayList<>();
+  
+  
   synchronized private void addNewTab(File logFile, String logFormat){
 
     LogObject log = parserManager.logParser(logFile, new String(logFormat));
@@ -40,12 +42,13 @@ public class logv implements ActionListener, Runnable{
       return;
       // don't add a new tab, file doesn't exist.
     }
-    JTable table = ((LogFormat)log).getLogTable();
-    table.setSize(1000,300);
-    JScrollPane sPane = new JScrollPane(table);
-    JComponent panel = ((LogFormat)log).getLogPanel();
-    panel.add(sPane,BorderLayout.NORTH);
-    panel.setSize(1000,300);
+    // JTable table = ((LogFormat)log).getLogTable();
+    // table.setSize(1000,300);
+    // JScrollPane sPane = new JScrollPane(table);
+    JPanel panel = ((LogFormat)log).getLogPanel(mainWindow);
+    // panel.add(sPane,BorderLayout.NORTH);
+    // panel.setSize(1000,300);
+    panel.setBounds(0,40,400,300); 
     panel.setVisible(true);
     openTabs.put(panel,log);
     mainArea.addTab(logFile.getAbsolutePath(),panel);
@@ -109,8 +112,8 @@ public class logv implements ActionListener, Runnable{
     // System.out.println("New thread");
     if(GlobalObjectStatus.equals("newtab")){
       if(GlobalObjectArguments.isEmpty()){
+        return;
       }
-
       this.addNewTab((File)GlobalObjectArguments.get(0),GlobalObjectArguments.get(1).toString());
       GlobalObjectArguments.clear();
       GlobalObjectStatus = "";

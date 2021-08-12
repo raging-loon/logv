@@ -1,6 +1,7 @@
 package src.sql;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 
@@ -117,7 +118,7 @@ public class MySqlErrorLog extends LogObject implements LogFormat,Runnable{
     t.start();
   }
 
-  public JPanel getLogPanel(){
+  public JPanel getLogPanel(JFrame frame){
     return null;
   }
 }

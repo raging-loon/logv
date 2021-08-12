@@ -12,7 +12,6 @@ import java.nio.file.*;
 import src.*;
 import src.utils.AttackIdentifier;
 import src.utils.MiscUtils;
-
  
 /**
  * Apache2 Log Class
@@ -59,8 +58,9 @@ import src.utils.MiscUtils;
  * @version 1.0
  *
  */
-public class Apache2Log extends LogObject implements LogFormat,Runnable {
+public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionListener {
   public final String   TableHeaders[] = {"Ip Address", "Time","Request","Referer","Status Code","Length","User Agent"};
+  // NON GUI COMPONENTS
   public List<String>   HTTPUserAgents = new ArrayList<String>();
   public List<String>   HTTPRequests = new ArrayList<String>();
   public List<String>   HTTPIpAddresses = new ArrayList<String>();
@@ -68,7 +68,49 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
   public List<String>   HTTPStatusCodes = new ArrayList<String>();
   public List<String>   HTTPRequestTime = new ArrayList<String>();
   public List<String>   HTTPReferer = new ArrayList<String>();
-  
+  // GUI COMPONENTS
+  private JMenuBar webLogMenu = new JMenuBar();
+  private JPanel panel = new JPanel(new BorderLayout());
+  private JMenuItem nmapScanD = new JMenuItem("Nmap Scan Detector");
+  private JMenu DetectionTools = new JMenu("Detection Tools");
+  private JFrame logvMainWindow;
+  private boolean logPanelRetrieved = false;
+
+  public JPanel getLogPanel(JFrame frame){
+    logvMainWindow = frame;
+    logPanelRetrieved = true;
+    nmapScanD.addActionListener(this);
+    // set sizes and visibility
+    // webLogMenu.setSize(1000,20);
+    webLogMenu.setBounds(0,10,100,100);
+    panel.setSize(1000,300);
+    panel.setVisible(true);
+
+    // add stuff
+    DetectionTools.add(nmapScanD);
+    webLogMenu.add(DetectionTools);
+    panel.add(webLogMenu,BorderLayout.NORTH);
+    JTable logTable = this.getLogTable();
+    logTable.setBounds(0,20,400,300);
+    logTable.setSize(1000,300);
+    panel.add(new JScrollPane(logTable));
+    return this.panel;
+  }
+
+  public void actionPerformed(ActionEvent s){
+    if(s.getSource() == nmapScanD){
+      if(!logPanelRetrieved){
+        return;
+      }
+      JDialog jd = new JDialog(logvMainWindow,"Nmap Scan Results",true);
+      jd.add(new JScrollPane(this.nmapScanTable()));
+      jd.setSize(300,300);
+      jd.setVisible(true);
+    }
+  }
+
+
+
   public Apache2Log(String logFile){ this.logFile = logFile; this.logFormat="apache2";}
 
   public String[] getTableHeaders(){
@@ -100,7 +142,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
       @Override 
       public boolean isCellEditable(int row, int column){ return false; }
     };
-    table.setBounds(0,20,400,300);
+    table.setBounds(20,40,400,300);
 		table.setSize(400,300);
     return table;
   }
@@ -148,12 +190,12 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
           else if((arr[i].matches("(\"Mozilla/\\d.\\d.*)")|| arr[i].matches("(\"sqlmap/.*pip)")) && !HTTPRequest.equals("")){
             try{
               HTTPUserAgent = arr[i];
-              int max = arr.length;
-              // some logs have a "-" right after the user agent
-              if(arr[arr.length] == "\"-\""){
-                max--;
-              }
-              for(int j = 0; j < max; j++){
+              // int max = arr.length;
+              // // some logs have a "-" right after the user agent
+              // if(arr[arr.length] == "\"-\""){
+              //   max--;
+              // }
+              for(int j = 0; j < arr.length; j++){
                 HTTPUserAgent += " " + arr[++i];
               }
             } catch(Exception e){
@@ -273,6 +315,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
       }
     }
     JTable table = new JTable(results,headers);
+    // table.setBounds(0,20,400,300);
     table.setSize(400,300);
     return table;
   }
@@ -460,28 +503,4 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable {
     Thread t = new Thread(this);
     t.start();
   }
-
-
-
-  public JPanel getLogPanel(){
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.setSize(1000,300);
-    panel.setVisible(true);
-    JMenuBar webLogMenu = new JMenuBar();
-    JMenu DetectionTools = new JMenu("Detection Tools");
-    webLogMenu.setSize(20,1000);
-    JMenuItem nmapScanD = new JMenuItem("Nmap Scan Detector");
-    nmapScanD.addMouseListener(new MouseAdapter(){
-      public void MouseClicked(MouseEvent e){
-        JDialog jd = new JDialog();
-        jd.add(new JScrollPane(nmapScanTable()));
-      }
-    });
-    DetectionTools.add(nmapScanD);
-    webLogMenu.add(DetectionTools);
-    panel.add(webLogMenu,BorderLayout.NORTH);
-    panel.add(this.getLogTable());
-    return panel;
-  }
 }
- 
