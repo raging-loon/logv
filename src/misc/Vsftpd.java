@@ -6,9 +6,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTable;
+import javax.swing.*;
+
 import src.*;
 
 public class Vsftpd extends LogObject implements Runnable, LogFormat{
@@ -109,14 +108,17 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
       }
 
     } catch(FileNotFoundException e){
-      System.out.println("File: " + this.logFile + ": doesn't exist");
-      System.exit(-1);
+      JOptionPane fail = new JOptionPane();
+      String message = "File " + logFile + " doesn't exist";
+      fail.showMessageDialog(StatusObject.mWindow, message, "Failure", JOptionPane.ERROR_MESSAGE);
     } catch(java.nio.file.AccessDeniedException e){
-      System.out.println("Access to file: " + this.logFile + " was denied");
-      System.exit(-1);
+      JOptionPane fail = new JOptionPane();
+      String message = "Access to file: " + logFile + " was denied";
+      fail.showMessageDialog(StatusObject.mWindow, message,"Failure", JOptionPane.ERROR_MESSAGE);
     }catch(Exception e){
-      e.printStackTrace();
-      System.exit(-1);
+      JOptionPane fail = new JOptionPane();
+      String message = e.getMessage();
+      fail.showMessageDialog(StatusObject.mWindow, message, "Parsing Failure", JOptionPane.ERROR_MESSAGE);
     }
   }
 

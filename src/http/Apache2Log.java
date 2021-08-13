@@ -13,7 +13,7 @@ import java.nio.file.*;
 import src.*;
 import src.utils.AttackIdentifier;
 import src.utils.MiscUtils;
- 
+
 /**
  * Apache2 Log Class
  * 
@@ -202,6 +202,31 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       JDialog jd = new JDialog(logvMainWindow,"IP Frequency Table");
       jd.add(new JScrollPane(table));
       jd.setSize(300,300);
+      jd.setVisible(true);
+    }
+
+    else if(s.getSource() == pathTravD){
+      String[] headers = {"Ip Address","Time","Request","User Agent"};
+      List<Integer> ptLoc = new ArrayList<>();
+      for(int i = 0; i < HTTPRequests.size();i++){
+        if(PathTraversalDetector(i)){
+          ptLoc.add(i);
+        }
+      }
+      String[][] data = new String[ptLoc.size()][];
+      for(int i = 0; i < ptLoc.size(); i++){
+        String[] tempData = {
+          HTTPIpAddresses.get(ptLoc.get(i)),
+          HTTPRequestTime.get(ptLoc.get(i)),
+          HTTPRequests.get(ptLoc.get(i)),
+          HTTPUserAgents.get(ptLoc.get(i))
+        };
+        data[i] = tempData;
+      }
+      JTable table = new JTable(data,headers);
+      JDialog jd = new JDialog(logvMainWindow,"Path Traversal Results");
+      jd.setSize(300,300);
+      jd.add(new JScrollPane(table));
       jd.setVisible(true);
     }
 
