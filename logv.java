@@ -12,7 +12,7 @@ import javax.swing.*;
 
 
 public class logv implements ActionListener, Runnable{
-  private static JFrame mainWindow = new JFrame("LogViewer");
+  private static JFrame mainWindow = StatusObject.mWindow;
   private static HashMap<JComponent, LogObject> openTabs
                                                 = new HashMap<>();
 
@@ -97,13 +97,13 @@ public class logv implements ActionListener, Runnable{
       t.start();
     }
     else if(e.getSource() == compare){
-      System.out.println("COMPARE");
+      // System.out.println("COMPARE");
       List<LogObject> x = new ArrayList<>();
       for(JComponent y: openTabs.keySet()){
         x.add(openTabs.get(y));
         
       }
-      System.out.println(x.get(0).getLogFile());
+      // System.out.println(x.get(0).getLogFile());
       JDialog popup = new JDialog(mainWindow,"Log Comparison Results",true);
       popup.add(CompareTools.compareLogsResults(CompareTools.compareLogs(x.get(0), x.get(1))));
       popup.setSize(300,300);

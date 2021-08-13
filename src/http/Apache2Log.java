@@ -76,12 +76,12 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
   private JMenu DetectionTools = new JMenu("Detection Tools");
   private JMenu FrequencyTools = new JMenu("Frequency Tools");
   
-  private JMenuItem nmapScanD = new JMenuItem("Nmap Scan Detector");
-  private JMenuItem xxsScanD = new JMenuItem("XXS Scan Detector");
-
+  private JMenuItem nmapScanD = new JMenuItem("User Agent Scanner");
+  private JMenuItem xxsScanD = new JMenuItem("XXS Detector");
+  private JMenuItem pathTravD = new JMenuItem("Path Traversal Detector");
   private JMenuItem ipCountOpt = new JMenuItem("Show IP Frequencies");
   // vv a reference to the mainWindow JFrame in logv.java
-  private JFrame logvMainWindow;
+  private JFrame logvMainWindow = StatusObject.mWindow;
   private boolean logPanelRetrieved = false;
 
   public JPanel getLogPanel(JFrame frame){
@@ -89,6 +89,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     logPanelRetrieved = true;
     nmapScanD.addActionListener(this);
     xxsScanD.addActionListener(this);
+    pathTravD.addActionListener(this);
     ipCountOpt.addActionListener(this);
     // set sizes and visibility
     // webLogMenu.setSize(1000,20);
@@ -99,7 +100,9 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     // add stuff
     DetectionTools.add(nmapScanD);
     DetectionTools.add(xxsScanD);
+    DetectionTools.add(pathTravD);
     FrequencyTools.add(ipCountOpt);
+
     webLogMenu.add(DetectionTools);
     webLogMenu.add(FrequencyTools);
     panel.add(webLogMenu,BorderLayout.NORTH);
@@ -130,22 +133,22 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       }
       String[][] results = new String[size][];
       for(int i = 0; i < nsdLoc.size() ;i++){
-        if(nmapScanSearch(i) == true){
           String[] temp = {
             HTTPIpAddresses.get(nsdLoc.get(i)),
             HTTPRequests.get(nsdLoc.get(i)),
             HTTPRequestTime.get(nsdLoc.get(i))
           };
           results[i] = temp;
-        }
+        // }
       }
       JTable table = new JTable(results,headers);
-      table.setBounds(0,0,300,300);
-      table.setSize(300,300);
+      // table.setBounds(0,0,300,300);
+      // table.setSize(300,300);
       
-      JDialog jd = new JDialog(logvMainWindow,"Nmap Scan Results",true);
-      jd.add(table);
+      JDialog jd = new JDialog(logvMainWindow,"Nmap Scan Results");
+      jd.add(new JScrollPane(table));
       jd.setSize(300,300);
+      // jd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       jd.setVisible(true);
     }
 
@@ -163,7 +166,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       }
       String[][] data = new String[size + 1][];
       for(int i = 0; i < xssDLoc.size(); i++){
-        if(XssDetector(i)){
+        
           String[] tempData = {
             HTTPIpAddresses.get(xssDLoc.get(i)),
             HTTPRequestTime.get(xssDLoc.get(i)),
@@ -171,26 +174,35 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
             HTTPStatusCodes.get(xssDLoc.get(i))
           };
           data[i] = tempData;
-        }
+        
       }
-      JTable XSSTable = new JTable(data, headers){
-        @Override
-        public boolean isCellEditable(int row,int column){ return false;}
-      };
+      JTable XSSTable = new JTable(data, headers);
       // XSSTable.setBounds(0,0,300,300);
-      JDialog jd = new JDialog(logvMainWindow, "XSS Detection Results",true);
-      jd.setLayout(new FlowLayout());
-      JPanel tablePanel = new JPanel(new FlowLayout());
-      tablePanel.setSize(300,300);
-      tablePanel.add(new JScrollPane(XSSTable));
-      jd.add(tablePanel);
+      JDialog jd = new JDialog(logvMainWindow, "XSS Detection Results");
+      // jd.setLayout(new BorderLayout());
+      jd.add(new JScrollPane(XSSTable));
       jd.setSize(300,300);
       jd.setVisible(true);
       
     }
 
     else if(s.getSource() == ipCountOpt){
-
+      HashMap<String,Integer> ipCounts = this.getIpCounts();
+      String[] headers = {"Ip Address","Frequency"};
+      String[][] data = new String[ipCounts.size()][];
+      int passes = 0;
+      for(String addr: ipCounts.keySet()){
+        String[] tempData = {
+          addr, String.valueOf(ipCounts.get(addr))
+        };
+        data[passes] = tempData;
+        passes++;
+      }
+      JTable table = new JTable(data,headers);
+      JDialog jd = new JDialog(logvMainWindow,"IP Frequency Table");
+      jd.add(new JScrollPane(table));
+      jd.setSize(300,300);
+      jd.setVisible(true);
     }
 
   }
@@ -379,7 +391,8 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
   }
 
   public boolean nmapScanSearch(int index){
-    if(HTTPUserAgents.get(index).matches(".*Nmap Scripting Engine; https://nmap.org/book/nse.html.*"))
+    if(HTTPUserAgents.get(index).matches(".*Nmap Scripting Engine; https://nmap.org/book/nse.html.*") 
+    || HTTPUserAgents.get(index).matches(".*sqlmap.*"))
       return true;
     else return false;
   }
@@ -427,25 +440,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       }
     }
     if(!silent) System.out.println("Total possible sqli attacks: " + occurences);
-    return found;
-  }
-
-  // look for "sqlmap/\d.\d.\d#pip (http://sqlmap.org)"
-  public boolean SQLMapUADetector(boolean silent){
-    int occurences = 0;
-    boolean found = false;
-    for(int i = 0; i < HTTPUserAgents.size(); i++){
-      if(HTTPUserAgents.get(i).matches(".*sqlmap.*")){
-        found = true;
-        occurences++;
-        if(!silent){
-          System.out.println("-------------------------");
-          System.out.println("Ip Address: " + HTTPIpAddresses.get(i));
-          System.out.println("Time: " + HTTPRequestTime.get(i));
-        }
-      }
-    }
-    if(!silent) System.out.println("Total SQLMap user agents found: " + occurences);
     return found;
   }
 

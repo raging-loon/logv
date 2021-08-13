@@ -22,7 +22,7 @@ public class MiscUtils {
       case 500:
         return "Internal Server Error";
       default:
-        return "Unkown";  
+        return "Unknown";  
     }
   }
   public static String[] WhoisApiDisector(String ipAddr){
