@@ -41,10 +41,17 @@ FileNotFoundException
 java.nio.AccessDeniedException
 IOException
 ```
-On headless systems, this should print a message, on the gui, do th following:
+On headless systems, this should print a message, on the gui, do the following:
 ```java
 JOptionPane someNameHere = new JOptionPane();
 String message = "something seomthing something, congratulations, you failed...";
 // message can also be the message from an exception(e.getMessage())
 fail.showMessageDialog(StatusObject.mWindow, message,"Nelson Muntz: Ha Ha!",JOptionPane.ERROR_MESSAGE);
 ```
+
+## The Functionality
+Each log must have some feature to get IP address frequencies and produce a table based on it. Obviously, some logs(mysql)
+do not log IP addresses.
+
+
+

@@ -7,7 +7,6 @@ import javax.swing.*;
 
 // import javax.swing.JTable;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.*;
 import java.nio.file.*;
 import src.*;
@@ -77,16 +76,18 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
   private JMenu FrequencyTools = new JMenu("Frequency Tools");
   
   private JMenuItem nmapScanD = new JMenuItem("User Agent Scanner");
-  private JMenuItem xxsScanD = new JMenuItem("XXS Detector");
+  private JMenuItem xxsScanD = new JMenuItem("XSS Detector");
+  
   private JMenuItem pathTravD = new JMenuItem("Path Traversal Detector");
   private JMenuItem ipCountOpt = new JMenuItem("Show IP Frequencies");
+  
   // vv a reference to the mainWindow JFrame in logv.java
   private JFrame logvMainWindow = StatusObject.mWindow;
-  private boolean logPanelRetrieved = false;
+  // private boolean logPanelRetrieved = false;
 
   public JPanel getLogPanel(JFrame frame){
     logvMainWindow = frame;
-    logPanelRetrieved = true;
+    // logPanelRetrieved = true;
     nmapScanD.addActionListener(this);
     xxsScanD.addActionListener(this);
     pathTravD.addActionListener(this);
@@ -232,16 +233,16 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
 
   }
 
-
-
   public Apache2Log(String logFile){ this.logFile = logFile; this.logFormat="apache2";}
 
   public String[] getTableHeaders(){
     return this.TableHeaders;
   }
+  
   public List<String> getIpAddresses(){
     return this.HTTPIpAddresses;
   }
+  
   public int getIpCounts(String ipAddr){
     int counter = 0;
     for(String addr: HTTPIpAddresses){
@@ -251,9 +252,11 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     }
     return counter;
   }
+  
   public int getLogSize(){
     return this.HTTPIpAddresses.size();
   }
+  
   public JTable getLogTable(){
     if(this.HTTPIpAddresses.size() == 0){
       this.start();
@@ -266,6 +269,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
 		table.setSize(400,300);
     return table;
   }
+ 
   public void Parser(){
     try{
       List<String> allLines = Files.readAllLines(Paths.get(this.logFile));
@@ -374,7 +378,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     }
   }
   
-  
   public HashMap<String,Integer> getIpCounts(){
     HashMap<String,Integer> IpCount = new HashMap<>();
     for(String addr: HTTPIpAddresses){
@@ -388,7 +391,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     return IpCount;
   }
 
-  
   public void PrintIpCounts(){
     HashMap<String,Integer> ipCount = getIpCounts();
     for(String i: ipCount.keySet()){
@@ -422,8 +424,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     else return false;
   }
  
-
-
   public boolean XssDetector(boolean silent){
     int occurences = 0;
     boolean found = false;
@@ -468,8 +468,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     return found;
   }
 
-
-
   public boolean PathTraversalDetector(boolean silent){
     int occurences = 0;
     boolean found = false;
@@ -493,6 +491,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     if(AttackIdentifier.PathTraversalMatchFound(HTTPRequests.get(index))) return true;
     else return false;
   }
+
   public String[][] getTableData(){
     int max = HTTPIpAddresses.size();
     String[][] table = new String[max][];// = {{},{},{}};
@@ -514,7 +513,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     return table;
   }
 
-
   public void logPrint(){
     for(int i = 0; i < this.HTTPIpAddresses.size();i++){
       System.out.println("-------------------------");
@@ -527,7 +525,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       System.out.println("User Agent: " + HTTPUserAgents.get(i));
     }
   }
-
 
   public String[][] getInfoTable(int rowNo,StatusObject s){
     // WhoisLookup needs to be put on another thread.
@@ -576,7 +573,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
      **/
   
   }
-
 
   public void run(){
     this.Parser();

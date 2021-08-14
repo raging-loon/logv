@@ -3,14 +3,14 @@ package src.misc;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
+import java.awt.event.*;
 import javax.swing.*;
-
+import java.awt.BorderLayout;
 import src.*;
+import src.utils.CompareTools;
 
-public class Vsftpd extends LogObject implements Runnable, LogFormat{
+public class Vsftpd extends LogObject implements Runnable, LogFormat,ActionListener{
   public Vsftpd(String logFile){this.logFile = logFile; this.logFormat = "vsftpd";}
   public List<String> LogDate     = new ArrayList<>();
   public List<String> PID         = new ArrayList<>();
@@ -18,6 +18,41 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
   public List<String> User        = new ArrayList<>();
   public List<String> Client      = new ArrayList<>();
   public List<String> Message     = new ArrayList<>();
+  // private JFrame mWindow;
+  private JPanel panel = new JPanel(new BorderLayout());
+  private JMenuBar mainMenu = new JMenuBar();
+  private JMenu FrequencyTools = new JMenu("Frequency Tools");
+  private JMenu DetectionTools = new JMenu("Detection Tools");
+  private JMenuItem ipFreq = new JMenuItem("IP Frequency");
+
+
+
+
+  public void actionPerformed(ActionEvent e){
+    if(e.getSource() == ipFreq){
+      HashMap<String,Integer> ipCounts = CompareTools.getIpCounts(this);
+      String[] headers = {"IP Address","Frequency"};
+      String[][] data = new String[ipCounts.size()][];
+      int passes = 0;
+      for(String addr: ipCounts.keySet()){
+        data[passes] = new String[]{
+          addr, String.valueOf(ipCounts.get(addr))
+        };
+      }
+
+      JTable table = new JTable(data,headers);
+      JDialog jd = new JDialog(StatusObject.mWindow,"IP Frequency results");
+      jd.setSize(300,300);
+      jd.add(new JScrollPane(table));
+      jd.setVisible(true);
+    }
+  }
+
+
+
+
+
+ 
   public void Parser(){
     try{
       List<String> allLines = Files.readAllLines(Paths.get(this.logFile));
@@ -36,7 +71,6 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
             date = arr[i] + " ";
             for(int j = i;  j < 10; j++){
               if(arr[i + 1].equals("[pid")){
-                date += " " + arr[i];
                 break;
               }
               date += arr[++i] + " ";
@@ -129,8 +163,6 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
   public int getLogSize(){
     return this.Client.size();
   }
-
-
   public JTable getLogTable(){
     if(this.Client.size() == 0){
       this.Parser();
@@ -192,6 +224,18 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat{
   }
 
   public JPanel getLogPanel(JFrame frame){
-    return null;
+    // this.mWindow = frame;
+    ipFreq.addActionListener(this);
+
+
+    FrequencyTools.add(ipFreq);
+    
+    mainMenu.add(FrequencyTools);
+    mainMenu.add(DetectionTools);
+    panel.add(mainMenu,BorderLayout.NORTH);
+    JTable table = this.getLogTable();
+    table.setBounds(0,20,400,300);
+    panel.add(new JScrollPane(table));
+    return this.panel;
   }
 }
