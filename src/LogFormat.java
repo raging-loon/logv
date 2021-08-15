@@ -25,4 +25,5 @@ public interface LogFormat{
   public int getLogSize();
   // public boolean parserSuccess();
   public JPanel getLogPanel(JFrame frame);
+  public void commandParser(ShellManager shm, String command);
 }

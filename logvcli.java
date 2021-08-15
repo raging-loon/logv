@@ -1,4 +1,5 @@
 import java.util.Scanner;
+
 import src.*;
 public class logvcli{
   public void StartShell() {
@@ -9,10 +10,20 @@ public class logvcli{
     Scanner sc = new Scanner(System.in);
     int passes = 0;
     while(!command.equals("exit") ){
-      System.out.printf("logv >");
+      System.out.printf(getPrompt(shellManager));
       command = sc.nextLine();
-      shellManager.ParseCommand(command);
+      if(shellManager.currentLog == null){
+        shellManager.ParseCommand(command);
+      } else {
+        ((LogFormat)shellManager.currentLog).commandParser(shellManager, command);
+      }
+
       passes++;
     }
+  }
+
+  private String getPrompt(ShellManager x){
+    String prompt = x.getCurrentLogFile().equals("") ? "logv >" : "logv(" + x.getCurrentLogFile() + ") >";
+    return prompt;
   }
 }

@@ -238,4 +238,8 @@ public class Vsftpd extends LogObject implements Runnable, LogFormat,ActionListe
     panel.add(new JScrollPane(table));
     return this.panel;
   }
+
+  public void commandParser(ShellManager shm,String command){
+    
+  }
 }

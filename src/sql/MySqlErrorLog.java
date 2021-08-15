@@ -121,4 +121,7 @@ public class MySqlErrorLog extends LogObject implements LogFormat,Runnable{
   public JPanel getLogPanel(JFrame frame){
     return null;
   }
+  public void commandParser(ShellManager shm,String command){
+    
+  }
 }
