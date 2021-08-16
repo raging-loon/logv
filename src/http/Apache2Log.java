@@ -585,15 +585,19 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
   
   
    public void commandParser(ShellManager shm,String command){
-    
+
+
+    HttpXMLManager httpXMLManager = new HttpXMLManager(this, this.logFile);
+   
+   
     if(command.split(" ")[0].equals("show")){
+
       String[] cmdArr = command.split(" ");
       if(cmdArr.length == 1){
         // System.out.println("");
         System.out.println("usage: show <item>");
         System.out.println("item can be one of the following: ");
         System.out.println("\tip-addr");
-        System.out.println("\tuser-agents");
         System.out.println();
         System.out.println("Use -xml|-html at the end to save to an xml/html file[not currently supported]");
         return;
@@ -614,27 +618,44 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     } else if(command.matches(".*xss.*")){
       String[] cmdArr = command.split(" ");
       if(cmdArr.length == 1){
-        System.out.println("usage: xss -a < -xml|-html <file> >");
+        System.out.println("usage: xss [-h] < -xml|-html <file> >");
       }else{  
-        if(cmdArr[2].equals("-xml")){
-          try{
-            String file = cmdArr[3];
-            HttpXMLManager httpXMLManager = new HttpXMLManager(this,file);
-            httpXMLManager.saveXSSReport(file, HttpXMLManager.XMLFORMAT);
-          } catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("xss: -xml requires a filename");
-          }
-        } else if(cmdArr[2].endsWith("-html")){
-          try{
-            String file = cmdArr[3];
-            HttpXMLManager httpXMLManager = new HttpXMLManager(this, file);
-            httpXMLManager.saveXSSReport(file, HttpXMLManager.HTMLFORMAT);
-          } catch(ArrayIndexOutOfBoundsException e){
-            System.out.println("xss: -html requires a filename");
-          }
+        if(cmdArr[1].equals("-h")){
+          HttpOptionPrinter.printApache2XSSHelp();
         }
+        else if(cmdArr[1].equals("-html")){
+          if(cmdArr.length == 2){
+            System.out.println("xss: -html requires an argument");
+          } else {
+            String filename = cmdArr[2];
+            httpXMLManager.saveXSSReport(filename, HttpXMLManager.HTMLFORMAT);
+          }
+        } 
+        else if(cmdArr[1].equals("-xml")){
+          if(cmdArr.length == 2){
+            System.out.println("xss: -xml requires an argument");
+          } else {
+            String filename = cmdArr[2];
+            httpXMLManager.saveXSSReport(filename, HttpXMLManager.XMLFORMAT);
+          }
+        } 
+        else if(cmdArr[1].matches("-p|--print")){
+          this.XssDetector(false);
+          return;
+        } else {
+          HttpOptionPrinter.printApache2XSSHelp();
+        }
+      } 
+    }  /* XSS COMMAND OPTION*/
+
+    else if(command.matches("(pt|pathtrav|path-traversal).*")){
+      String[] cmdArr = command.split(" ");
+      if(cmdArr.length == 1){
+        HttpOptionPrinter.printApache2PathTraversalHelp();
+      } else {
+        
       }
-    } 
+    }
     else {
 
       // if all else fails, send the command to the shell manager
