@@ -145,7 +145,6 @@ public class logv implements ActionListener, Runnable{
       if(args[0].equals("-sh") || args[0].equals("--shell")){
         logvcli l = new logvcli();
         StatusObject.headless = true;
-        
         l.StartShell();
         System.exit(0);
       }

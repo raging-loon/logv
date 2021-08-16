@@ -31,7 +31,7 @@ public class ShellManager {
         }
         logFormats.add(logFormat);
         openLogs.add(log);
-        logNames.add("log" + openLogs.size() + "-" + logFormat);
+        logNames.add("log" + openLogs.size());
       }
     } 
     else if(command.equals("show logs")){
@@ -66,6 +66,12 @@ public class ShellManager {
           System.out.println("\033[31mLog doesn't exist\033[0m");
         }
       }
+    } 
+
+    else if(command.equals("back")){
+      currentLog = null;
+      currentLogFile = "";
+      currentLogFormat = "";
     }
     else {
       System.out.println("\033[31mUnkown command: \033[0m " + command);

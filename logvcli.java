@@ -3,6 +3,7 @@ import java.util.Scanner;
 import src.*;
 public class logvcli{
   public void StartShell() {
+    System.out.println("Logv Shell v" + StatusObject.currentVersion);
     ShellManager shellManager = new ShellManager();
     
     
