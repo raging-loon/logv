@@ -614,7 +614,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
         }
       }
 
-
+      // ################### XSS COMMAND ##################
     } else if(command.matches(".*xss.*")){
       String[] cmdArr = command.split(" ");
       if(cmdArr.length == 1){
@@ -625,7 +625,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
         }
         else if(cmdArr[1].equals("-html")){
           if(cmdArr.length == 2){
-            System.out.println("xss: -html requires an argument");
+            HttpOptionPrinter.argumentRequired("xss","-html");
           } else {
             String filename = cmdArr[2];
             httpXMLManager.saveXSSReport(filename, HttpXMLManager.HTMLFORMAT);
@@ -633,7 +633,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
         } 
         else if(cmdArr[1].equals("-xml")){
           if(cmdArr.length == 2){
-            System.out.println("xss: -xml requires an argument");
+            HttpOptionPrinter.argumentRequired("xss", "-xml");
           } else {
             String filename = cmdArr[2];
             httpXMLManager.saveXSSReport(filename, HttpXMLManager.XMLFORMAT);
@@ -646,15 +646,51 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
           HttpOptionPrinter.printApache2XSSHelp();
         }
       } 
-    }  /* XSS COMMAND OPTION*/
-
+    } 
+    // ################### PATH TRAVERSAL #####################
     else if(command.matches("(pt|pathtrav|path-traversal).*")){
       String[] cmdArr = command.split(" ");
       if(cmdArr.length == 1){
         HttpOptionPrinter.printApache2PathTraversalHelp();
       } else {
-        
+        if(cmdArr[1].equals("-xml")){
+          if(cmdArr.length == 2) { HttpOptionPrinter.argumentRequired("pt","-xml"); }
+          else {
+            String filename = cmdArr[2];
+            httpXMLManager.savePathTraversalReport(filename, HttpXMLManager.XMLFORMAT);
+          }
+        } else if(cmdArr[1].equals("-html")){
+          if(cmdArr.length == 2){ HttpOptionPrinter.argumentRequired("pt","-html"); }
+          else {
+            String filename = cmdArr[2];
+            httpXMLManager.savePathTraversalReport(filename, HttpXMLManager.HTMLFORMAT);
+          }
+        } else {
+          HttpOptionPrinter.printApache2PathTraversalHelp();
+        }
       }
+    }
+    // ################### USER AGENT ####################
+    else if(command.matches("(ua|user-agent).*")){
+      String[] cmdArr = command.split(" ");
+      if(cmdArr.length == 1){
+        HttpOptionPrinter.printUACommandHelp();
+      } else {
+        if(cmdArr[1] == "-html"){
+          if(cmdArr.length == 2){
+            HttpOptionPrinter.argumentRequired("ua", "-html");
+            return;
+          } 
+          httpXMLManager.saveUAReport(cmdArr[2], HttpXMLManager.HTMLFORMAT);
+        } else if(cmdArr[1].equals("-xml")){
+          if(cmdArr.length == 2){ HttpOptionPrinter.argumentRequired("ua", "-xml"); return;}
+          
+          httpXMLManager.saveUAReport(cmdArr[2],HttpXMLManager.XMLFORMAT);
+        }
+      }
+    }
+    else if(command.equals("help")){
+      HttpOptionPrinter.basicApache2CommandHelp();
     }
     else {
 
