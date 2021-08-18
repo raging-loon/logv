@@ -333,7 +333,7 @@ Time                 Id Command    Argument
 2021-08-05T16:01:08.462943Z	   70 Query	USE dvwa
 2021-08-05T16:01:08.463386Z	   71 Connect	dvwa@localhost on dvwa using Socket
 2021-08-05T16:01:08.463693Z	   70 Quit	
-2021-08-05T16:01:08.464370Z	   71 Quit	
+2021-08-05T16:01:08.464370Z	   71 Quit
 2021-08-05T16:01:16.599157Z	   72 Connect	dvwa@localhost on  using Socket
 2021-08-05T16:01:16.599330Z	   72 Query	USE dvwa
 2021-08-05T16:01:16.599883Z	   73 Connect	dvwa@localhost on dvwa using Socket

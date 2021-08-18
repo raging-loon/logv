@@ -13,7 +13,7 @@ import src.LogObject;
 public class MySqlQueryLog extends LogObject //implements LogFormat{
   {public String sqlVersion;
   public List<String> QTime = new ArrayList<String>();
-  public List<Integer> QId =  new ArrayList<Integer>();
+  public List<String> QId =  new ArrayList<String>();
   public List<String> QCommand = new ArrayList<String>();
   public List<String> QArgs = new ArrayList<String>();
 
@@ -27,28 +27,61 @@ public class MySqlQueryLog extends LogObject //implements LogFormat{
   public void Parser(){
     try{
       List<String> allLines = Files.readAllLines(Paths.get(logFile));
-
-      ArrayList<String> whitespace = new ArrayList<>();whitespace.add(" ");
-        
-      for(int i = 3; i < allLines.size();i++){
-        List<String> lines = Arrays.stream(allLines.get(i).split(" ")).map(String::trim).collect(Collectors.toList());
-
-        String time = "";
-        int id = 0;
-        String command = "";
-        String message = "";
-        for(int j = 0; j < lines.size(); j++){
-          time = lines.get(0);
-          id = Integer.valueOf(lines.get(1));
-          command = lines.get(2);
-          message = lines.get(3);
+      for(int i = 0; i < allLines.size();i++){
+        if(allLines.get(i).matches(".*(Version\\:).*")){
+          i+=2;
+          
         }
+        int passes = 0;
+        int size = allLines.get(i).split(" ").length;
+        String time = "";
+        String id = "";
+        String argument = "";
+        String message = "";
+        for( String j : allLines.get(i).split(" ")){
+        
+          // look for time
+          // 2021-07-25T15:27:32.081932Z
+          if(j.matches("\\d{4}-\\d\\d-.*\\:\\d{0,}..*")){
+            time = j;
+            passes++;
+          } 
+          else if((j.strip()).matches("\\d{0,}")){
+            id = j;
+            passes++;
+          }
 
-        System.out.println("----------------------");
-        System.out.println("TIME: " + time);
+          else if(j.matches("(Quit|Connect|Query).*")){
+            // String command = "";
+            if(j.matches("(Quit).*")){
+              argument = j.substring(4).strip();
+              continue;
+            } else if(j.matches("(Connect).*")){
+              argument = j.substring(7).strip();
+
+            } else if(j.matches("(Query).*")){
+              argument = j.substring(5).strip();
+            }
+            
+            if(!time.equals("")){
+              for(int k = passes; k < size; k++){
+                message += j;
+              }
+              for(int k = 0; k < 5; k++){
+                if(!allLines.get(i + k).split(" ")[0].matches("\\d{4}-\\d\\d-.*\\:\\d{0,}..*")){
+                  message += allLines.get(++i);
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+
+        }
+        System.out.println("Time: " + time);
+        System.out.println("Argument: " + argument);
         System.out.println("ID: " + id);
-        System.out.println("COMMAND: " + command);
-        System.out.println("MESSAGE: " + message);
+        System.out.println("Message: " + message);
       }
 
 

@@ -583,7 +583,6 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     t.start();
   }
   
-  
    public void commandParser(ShellManager shm,String command){
 
 
