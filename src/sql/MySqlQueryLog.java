@@ -10,8 +10,8 @@ import java.nio.file.*;
 import src.LogFormat;
 import src.LogObject;
 
-public class MySqlQueryLog extends LogObject //implements LogFormat{
-  {public String sqlVersion;
+public class MySqlQueryLog extends LogObject {
+  // public String sqlVersion;
   public List<String> QTime = new ArrayList<String>();
   public List<String> QId =  new ArrayList<String>();
   public List<String> QCommand = new ArrayList<String>();
@@ -38,53 +38,62 @@ public class MySqlQueryLog extends LogObject //implements LogFormat{
         String id = "";
         String argument = "";
         String message = "";
-        for( String j : allLines.get(i).split(" ")){
+
+        String lineArr[] = allLines.get(i).split(" ");
+        for(int j = 0 ; j < lineArr.length; j++){
         
           // look for time
           // 2021-07-25T15:27:32.081932Z
-          if(j.matches("\\d{4}-\\d\\d-.*\\:\\d{0,}..*")){
-            time = j;
+          if(lineArr[j].matches("\\d{4}-\\d\\d-.*\\:\\d{0,}..*")){
+            time = lineArr[j];
             passes++;
           } 
-          else if((j.strip()).matches("\\d{0,}")){
-            id = j;
+          else if((lineArr[j].strip()).matches("\\d{0,}")){
+            id = lineArr[j];
             passes++;
           }
 
-          else if(j.matches("(Quit|Connect|Query).*")){
+          else if(lineArr[j].matches("(Quit|Connect|Query).*")){
             // String command = "";
-            if(j.matches("(Quit).*")){
-              argument = j.substring(4).strip();
-              continue;
-            } else if(j.matches("(Connect).*")){
-              argument = j.substring(7).strip();
+              if(lineArr[j].matches("(Quit).*")){
+                argument = lineArr[j].substring(0,4);
+                // message = lineArr[j].substring(4);
+                continue;
+              } else if(lineArr[j].matches("(Connect).*")){
+                argument = lineArr[j].substring(0,7); 
+                if(j != lineArr.length) message = lineArr[j].substring(7);
 
-            } else if(j.matches("(Query).*")){
-              argument = j.substring(5).strip();
-            }
-            
-            if(!time.equals("")){
-              for(int k = passes; k < size; k++){
-                message += j;
+              } else if(lineArr[j].matches("(Query).*")){
+                argument = lineArr[j].substring(0,5);
+                message = lineArr[j].substring(5);
               }
-              for(int k = 0; k < 5; k++){
-                if(!allLines.get(i + k).split(" ")[0].matches("\\d{4}-\\d\\d-.*\\:\\d{0,}..*")){
-                  message += allLines.get(++i);
+          
+        } 
+          else if(!argument.equals("") && !time.equals("") && !id.equals("")){
+            message += " " + lineArr[j];
+            try{
+              for(int k = 1; k <= 4; k++){
+                if(!allLines.get(i+k).split(" ")[0].matches("\\d{4}-\\d\\d-.*\\:\\d{0,}..*")){
+                  message += " " + allLines.get(i+k).stripLeading().stripTrailing();
+
                 } else {
                   break;
                 }
               }
+            } catch(Exception e){
+              continue;
+              // This just means that we are so close to the end of the file
+              // that it will throw an error because of k
             }
           }
-
+         
         }
+
         System.out.println("Time: " + time);
         System.out.println("Argument: " + argument);
         System.out.println("ID: " + id);
         System.out.println("Message: " + message);
       }
-
-
 
     } catch(java.io.FileNotFoundException e){
       System.out.println("File: " + this.logFile + ": file not found");
@@ -97,7 +106,8 @@ public class MySqlQueryLog extends LogObject //implements LogFormat{
       e.printStackTrace();
       System.exit(-1);
     }
-
   }
+
+  
   public void logPrint(){}
 }
