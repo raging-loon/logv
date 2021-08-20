@@ -1,28 +1,54 @@
 package src.sql;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.*;
+import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.event.*;
+import java.util.*;
+// import java.util.regex.*;
 import java.util.stream.Collectors;
+
 import java.nio.file.*;
 
 import src.LogFormat;
 import src.LogObject;
+import src.StatusObject;
 
-public class MySqlQueryLog extends LogObject {
+public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener{
   // public String sqlVersion;
   public List<String> QTime = new ArrayList<String>();
   public List<String> QId =  new ArrayList<String>();
   public List<String> QCommand = new ArrayList<String>();
   public List<String> QArgs = new ArrayList<String>();
-
+  
+  private JPanel mainFrame = new JPanel(new BorderLayout());
+  private JMenuBar mainMenu = new JMenuBar();
+  private JMenu LogInfo = new JMenu("Log Info");
+  private JMenuItem getMysqlInfo = new JMenuItem("Get MySQL Info");
+  private JMenu sqliDetect = new JMenu("SQLi Detector");
+  private JFrame mainWindowRef = StatusObject.mWindow;
   public MySqlQueryLog(String filename){
     this.logFile = filename;
   }
 
+  public JPanel getLogPanel(JFrame frame){
+    LogInfo.add(getMysqlInfo);
+    LogInfo.add(sqliDetect);
+    mainMenu.add(LogInfo);
+    getMysqlInfo.addActionListener(this);
+    sqliDetect.addActionListener(this);
+    mainFrame.add(mainMenu, BorderLayout.NORTH);
+    mainFrame.add(new JScrollPane(this.getLogTable()));
+    return this.mainFrame;
+  }
 
+  public void actionPerformed(ActionEvent e){
 
+  }
+
+  public JTable getLogInfo(){
+    JTable table = new JTable();
+
+    return table;
+  }
 
   public void Parser(){
     try{
@@ -83,16 +109,15 @@ public class MySqlQueryLog extends LogObject {
             } catch(Exception e){
               continue;
               // This just means that we are so close to the end of the file
-              // that it will throw an error because of k
+              // that it will throw an error because of var k
             }
           }
          
         }
-
-        System.out.println("Time: " + time);
-        System.out.println("Argument: " + argument);
-        System.out.println("ID: " + id);
-        System.out.println("Message: " + message);
+        QId.add(id);
+        QArgs.add(argument);
+        QCommand.add(message); 
+        QTime.add(time);
       }
 
     } catch(java.io.FileNotFoundException e){
@@ -109,5 +134,46 @@ public class MySqlQueryLog extends LogObject {
   }
 
   
-  public void logPrint(){}
+
+  public void logPrint(){
+    for(int i = 0 ; i < QTime.size(); i++){
+      System.out.println("Time: " + QTime.get(i));
+      System.out.println("ID: " + QId.get(i));
+      System.out.println("Command: " + QCommand.get(i));
+      System.out.println("Message: " + QArgs.get(i));
+    }
+  }
+
+
+  public JTable getLogTable(){
+  
+    int max = this.QArgs.size();
+    String[] headers = {"Time","ID","Command","Message"};
+    String[][] data = new String[max][];
+    for(int i = 0 ; i < max; i++){
+      data[i] = new String[]{
+        QTime.get(i),
+        QId.get(i),
+        QCommand.get(i),
+        QArgs.get(i)
+      };  
+    }
+    
+
+    JTable table = new JTable(data,headers){
+      @Override
+      public boolean isCellEditable(int row, int column){
+        return false;
+      }
+    };
+
+    table.setBounds(20,40,400,300);
+		table.setSize(400,300);
+    return table;
+  }
+
+  public JTable sqliDetector(){
+    JTable table = new JTable();
+    return table;
+  }
 }

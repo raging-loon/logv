@@ -22,7 +22,8 @@ public class logv implements ActionListener, Runnable{
 
   private JMenuItem newApache2 = new JMenuItem("New Apache2 Log");
   private JMenuItem newMysqlErr = new JMenuItem("New MySql Error ");
-  private JMenuItem newVsftpd = new JMenuItem("New VSFTPD Log"); 
+  private JMenuItem newVsftpd = new JMenuItem("New VSFTPD Log");
+  private JMenuItem newMysqlQry = new JMenuItem("New MySql Query"); 
   private JMenuItem compare = new JMenuItem("Compare");
   private static ParserManager parserManager = new ParserManager();
   private String GlobalObjectStatus = "";
@@ -81,7 +82,10 @@ public class logv implements ActionListener, Runnable{
         logFormat = "mysql_err";
       } else if(e.getSource() == newVsftpd){
         logFormat = "vsftpd";
-      } else {
+      } else if (e.getSource() == newMysqlQry){
+        logFormat = "mysql_qry";
+      } 
+      else {
         // not one of the accepted JMenuItems, break out of this
         // should fix this later.
         return;
@@ -131,6 +135,8 @@ public class logv implements ActionListener, Runnable{
     newVsftpd.addActionListener(this);
     menu.add(newVsftpd);
     compare.addActionListener(this);
+    menu.add(newMysqlQry);
+    newMysqlQry.addActionListener(this);
     menu2.add(compare);
     mainMenu.add(menu);
     mainMenu.add(menu2);

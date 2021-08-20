@@ -53,4 +53,9 @@ public class AttackIdentifier {
     if(line.matches(".*(\\.\\./|\\.\\.\\|\\.\\.\\.\\./\\|\\.\\.\\.\\./\\//)+.*"))  return true;
     else return false;
   }
+
+  public static boolean BasicSqlLogSQLiDetect(String line){
+    if(line.matches(".*(1=1|1\\s=\\s1|1\\s=1|1=\\s1|--).*")) return true;
+    else return false;
+  }
 }

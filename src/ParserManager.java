@@ -51,6 +51,11 @@ public class ParserManager{
       log.Parser();
       return log;
     }
+    if(logFormat.equals("mysql_qry")){
+      MySqlQueryLog log = new MySqlQueryLog(logFile.getAbsolutePath());
+      log.Parser();
+      return log;
+    }
     
     return null;
   }
