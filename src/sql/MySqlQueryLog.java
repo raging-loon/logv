@@ -1,5 +1,7 @@
 package src.sql;
 import javax.swing.*;
+
+
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.util.*;
@@ -11,6 +13,7 @@ import java.nio.file.*;
 import src.LogFormat;
 import src.LogObject;
 import src.StatusObject;
+import src.utils.AttackIdentifier;
 
 public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener{
   // public String sqlVersion;
@@ -23,7 +26,7 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
   private JMenuBar mainMenu = new JMenuBar();
   private JMenu LogInfo = new JMenu("Log Info");
   private JMenuItem getMysqlInfo = new JMenuItem("Get MySQL Info");
-  private JMenu sqliDetect = new JMenu("SQLi Detector");
+  private JMenuItem sqliDetect = new JMenuItem("SQLi Detector");
   private JFrame mainWindowRef = StatusObject.mWindow;
   public MySqlQueryLog(String filename){
     this.logFile = filename;
@@ -41,11 +44,51 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
   }
 
   public void actionPerformed(ActionEvent e){
+    if(e.getSource() == sqliDetect){
+      JDialog jd = new JDialog(StatusObject.mWindow,"SQLi Results",true);
+      jd.setSize(300,300);
+      jd.add(new JScrollPane(this.sqliDetector()));
+      jd.setVisible(true);
+    } else if(e.getSource() == getMysqlInfo){
+      JDialog jd = new JDialog(StatusObject.mWindow,"MySQL Info",true);
+      jd.setSize(300,300);
+      jd.add(this.getLogInfo());
+      jd.setVisible(true);
+    }
+
 
   }
 
   public JTable getLogInfo(){
-    JTable table = new JTable();
+    String[] headers = {"Version","Port","File","Socket Location"};
+    String[] baseInfo = new String[3];
+    String version = "";
+    String port = "";
+    String file = "";
+    String sockLoc = "";
+    try{
+      List<String> tempLineCount = Files.readAllLines(Paths.get(this.logFile));
+      baseInfo[0] = tempLineCount.get(0);
+      baseInfo[1] = tempLineCount.get(1);
+      baseInfo[2] = tempLineCount.get(2);
+    }catch(Exception e){
+
+    }
+    String[][] data = new String[1][];
+    for(String i : baseInfo){
+      if(i.matches(".*(Version).*")){
+        version = i.substring(i.indexOf("Version:") + 8, i.indexOf("started")-1);
+      } else if(i.matches(".*(/.*).*")){
+        file = i.substring(0,i.indexOf(","));
+      } else if(i.matches(".*(Tcp Port:).*")){
+        port = i.substring(i.indexOf("Tcp Port:") + 9, i.indexOf("Unix"));
+      } else if(i.matches(".*(Unix Socket).*")){
+        sockLoc = i.substring(i.indexOf("Unix Socket:") + 12);
+      }
+    }
+    String[]legitData = {version,port,file,sockLoc};
+    data[0] = legitData;
+    JTable table = new JTable(data,headers);
 
     return table;
   }
@@ -173,7 +216,22 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
   }
 
   public JTable sqliDetector(){
-    JTable table = new JTable();
+    String[] headers = {"Time","Command"};
+    List<Integer> loc = new ArrayList<>();
+    for(int i  = 0; i < QArgs.size(); i++){
+      if(AttackIdentifier.BasicSqlLogSQLiDetect(QCommand.get(i))){
+        loc.add(i);
+      }
+    }
+    String[][] data = new String[loc.size()][];
+    for(int i = 0 ; i < loc.size(); i++){
+      data[i] = new String[]{
+        QTime.get(i),
+        QCommand.get(i)
+      };
+    }
+    
+    JTable table = new JTable(data,headers);
     return table;
   }
 }

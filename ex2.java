@@ -8,10 +8,7 @@ public class ex2 {
     MySqlQueryLog log = new MySqlQueryLog("tests/query.log");
     log.Parser();
     for(int i = 0; i < log.QArgs.size();i++){
-      if(AttackIdentifier.BasicSqlLogSQLiDetect(log.QArgs.get(i))){
-        System.out.println("-----------------");
-        System.out.println("Command: " + log.QArgs.get(i));
-      }
+      // System.out.println(log.QArgs.get(i));
     }
   } 
 }
