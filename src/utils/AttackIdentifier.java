@@ -33,7 +33,7 @@ public class AttackIdentifier {
     // line = line.toLowerCase();
     // select user, password, etc from sometable where something = 1
     // .*(union)(\+|%20)select(\+|%20).*from.*(where).*
-    if(line.matches(".*select.*;--.*") ){
+    if(line.matches(".*union.*select.*|.*select.*from.*|.*;--.*") ){
       return true;
     } else {
     return false;

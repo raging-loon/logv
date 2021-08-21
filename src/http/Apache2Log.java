@@ -691,6 +691,15 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     else if(command.equals("help")){
       HttpOptionPrinter.basicApache2CommandHelp();
     }
+    // ################### SQL INJECTION ##################
+    else if(command.matches("sqli.*")){
+      String cmdArr[] = command.split(" ");
+      if(cmdArr.length == 1){
+        HttpOptionPrinter.printSQLiApache2Help();
+        return;
+      }
+      this.SqliDetector(false);
+    }
     else {
 
       // if all else fails, send the command to the shell manager

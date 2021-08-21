@@ -12,6 +12,7 @@ import java.nio.file.*;
 
 import src.LogFormat;
 import src.LogObject;
+import src.ShellManager;
 import src.StatusObject;
 import src.utils.AttackIdentifier;
 
@@ -77,13 +78,13 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
     String[][] data = new String[1][];
     for(String i : baseInfo){
       if(i.matches(".*(Version).*")){
-        version = i.substring(i.indexOf("Version:") + 8, i.indexOf("started")-1);
+        version = i.substring(i.indexOf("Version:") + 6, i.indexOf("started")-1);
       } else if(i.matches(".*(/.*).*")){
         file = i.substring(0,i.indexOf(","));
       } else if(i.matches(".*(Tcp Port:).*")){
-        port = i.substring(i.indexOf("Tcp Port:") + 9, i.indexOf("Unix"));
+        port = i.substring(i.indexOf("Tcp Port:") + 7, i.indexOf("Unix"));
       } else if(i.matches(".*(Unix Socket).*")){
-        sockLoc = i.substring(i.indexOf("Unix Socket:") + 12);
+        sockLoc = i.substring(i.indexOf("Unix Socket:") + 10);
       }
     }
     String[]legitData = {version,port,file,sockLoc};
@@ -159,7 +160,7 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
         }
         QId.add(id);
         QArgs.add(argument);
-        QCommand.add(message); 
+        QCommand.add(message.trim()); 
         QTime.add(time);
       }
 
@@ -215,7 +216,7 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
     return table;
   }
 
-  public JTable sqliDetector(){
+  private JTable sqliDetector(){
     String[] headers = {"Time","Command"};
     List<Integer> loc = new ArrayList<>();
     for(int i  = 0; i < QArgs.size(); i++){
@@ -233,5 +234,13 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
     
     JTable table = new JTable(data,headers);
     return table;
+  }
+
+  public void commandParser(ShellManager shm, String command){
+    if(command.matches("")){
+      
+    } else {
+      shm.ParseCommand(command);
+    }
   }
 }

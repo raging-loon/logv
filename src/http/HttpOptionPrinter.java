@@ -9,6 +9,7 @@ public class HttpOptionPrinter {
     System.out.println("\t-html <filename> Save results to an HTML file(looking for help here, contact me at jgnovak1@protonmail.com)");
     System.out.println("\t-p Print results(very ugly)");
   }  
+  
   public static void printApache2PathTraversalHelp(){
     System.out.println("Path Traversal Detection, Apache2/Nginx");
     System.out.println("Options");
@@ -16,6 +17,7 @@ public class HttpOptionPrinter {
     System.out.println("\t-xml|-html <filename> Save results to an XML or HTML file");
     System.out.println("\t-p Print results(very ugly)");
   }
+  
   public static void printUACommandHelp(){
     System.out.println("User Agent Detection, Apache2/Nginx");
     System.out.println("Options");
@@ -23,10 +25,11 @@ public class HttpOptionPrinter {
     System.out.println("\t-xml|-html <filename> Save results to an XML or HTML file");
     
   }
+  
   public static void argumentRequired(String commandBase, String arg){
     System.out.println(commandBase + ": " + arg + " requires an argument");
   }
-
+  
   public static void basicApache2CommandHelp(){
     System.out.println("Apache2 Log Object, Logv v" + StatusObject.currentVersion);
     System.out.println("Informatino for the Apache2 log, -apache2, -nginx");
@@ -39,5 +42,13 @@ public class HttpOptionPrinter {
     System.out.println("Not yet supported commands");
     System.out.println("\tsqli - look for possible SQL Injection attacks");
     System.out.println("\tscript - look for possible scripted attacks, such as 70 requests in one second from one IP Address");
+  }
+
+  public static void printSQLiApache2Help(){
+    System.out.println("SQL Injection Detection, Apache2/Nginx");
+    System.out.println("Options");
+    System.out.println("\t-h Displays this message");
+    System.out.println("\t-xml|-html <filename> save results to an XML or HTML file");
+    System.out.println("\t-ip Show ip addresses flaged with possible sqli attempts");
   }
 }
