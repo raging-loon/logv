@@ -49,6 +49,6 @@ public class HttpOptionPrinter {
     System.out.println("Options");
     System.out.println("\t-h Displays this message");
     System.out.println("\t-xml|-html <filename> save results to an XML or HTML file");
-    System.out.println("\t-ip Show ip addresses flaged with possible sqli attempts");
+    System.out.println("\t-f|--flags Show ip addresses flaged with possible sqli attempts");
   }
 }

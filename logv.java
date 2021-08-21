@@ -18,8 +18,12 @@ public class logv implements ActionListener, Runnable{
 
   private static JMenuBar mainMenu = new JMenuBar();
   private static JTabbedPane mainArea = new JTabbedPane();
+  // ########################### MENUS ##########################
   private JMenu menu2 = new JMenu("Compare");
-
+  private JMenu HTTPMenu = new JMenu("New HTTP Log...");
+  private JMenu SQLMenu = new JMenu("New SQL Log....");
+  private JMenu MiscMenu = new JMenu("New Misc log...");
+  // ######################### MENUITEMS ##########################
   private JMenuItem newApache2 = new JMenuItem("New Apache2 Log");
   private JMenuItem newMysqlErr = new JMenuItem("New MySql Error ");
   private JMenuItem newVsftpd = new JMenuItem("New VSFTPD Log");
@@ -129,15 +133,18 @@ public class logv implements ActionListener, Runnable{
   public void addComponents(){
     JMenu menu = new JMenu("File");
     newApache2.addActionListener(this);
-    menu.add(newApache2);
+    HTTPMenu.add(newApache2);
     newMysqlErr.addActionListener(this);
-    menu.add(newMysqlErr);
+    SQLMenu.add(newMysqlErr);
     newVsftpd.addActionListener(this);
-    menu.add(newVsftpd);
+    MiscMenu.add(newVsftpd);
     compare.addActionListener(this);
-    menu.add(newMysqlQry);
+    SQLMenu.add(newMysqlQry);
     newMysqlQry.addActionListener(this);
     menu2.add(compare);
+    menu.add(HTTPMenu);
+    menu.add(SQLMenu);
+    menu.add(MiscMenu);
     mainMenu.add(menu);
     mainMenu.add(menu2);
 
