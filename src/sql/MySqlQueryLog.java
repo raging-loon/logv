@@ -39,7 +39,7 @@ public class MySqlQueryLog extends LogObject implements LogFormat,ActionListener
     getMysqlInfo.addActionListener(this);
     sqliDetect.addActionListener(this);
     mainFrame.add(mainMenu, BorderLayout.NORTH);
-    mainFrame.add(new JScrollPane(this.getLogTable()));
+    mainFrame.add(new JScrollPane(this.getLogTable())); 
     return this.mainFrame;
   }
 
