@@ -53,13 +53,15 @@ public class HttpFlags {
       }
     }
     String[][] data = new String[flagLoc.size()][];
-    for(int i = 0; i <= 0; i++){
-      data[i] = new String[]{
-        log.HTTPIpAddresses.get(flagLoc.get(i)),
-        log.HTTPRequestTime.get(flagLoc.get(i)),
-        log.HTTPRequests.get(flagLoc.get(i)),
-        log.HTTPUserAgents.get(flagLoc.get(i))
+    int passes = 0;
+    for(int i : flagLoc){
+      data[passes] = new String[]{
+        log.HTTPIpAddresses.get(flagLoc.get(passes)),
+        log.HTTPRequestTime.get(flagLoc.get(passes)),
+        log.HTTPRequests.get(flagLoc.get(passes)),
+        log.HTTPUserAgents.get(flagLoc.get(passes))
       };
+      passes++;
     }
     JTable table = new JTable(data,headers);
     return table;

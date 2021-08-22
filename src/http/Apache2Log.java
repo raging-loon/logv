@@ -235,7 +235,8 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
 
     else if(s.getSource() == sqliDetect){
       JDialog jd = new JDialog(StatusObject.mWindow, "SQLi Detection Results",true);
-      jd.add(new JScrollPane(HttpFlags.sqliFlagTable(this)));
+      JTable table = HttpFlags.sqliFlagTable(this);
+      jd.add(new JScrollPane(table));
       jd.setSize(300,300);
       jd.setVisible(true);
     }
