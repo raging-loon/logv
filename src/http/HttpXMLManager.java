@@ -3,6 +3,7 @@ import java.io.*;
 import javax.swing.JOptionPane;
 import src.*;
 import src.http.Apache2Log;
+import src.utils.AttackIdentifier;
 public class HttpXMLManager {
   public static final int HTMLFORMAT = 12;
   public static final int XMLFORMAT = 13;
@@ -18,19 +19,9 @@ public class HttpXMLManager {
     try{
       File file = new File(filename);
       if(file.createNewFile()){
-        // if we're in the shell
-        if(StatusObject.headless){
-          System.out.println("File " + filename + ": successfully created");
-        } 
-        else {
-          JOptionPane jo = new JOptionPane();
-          jo.showMessageDialog(StatusObject.mWindow, 
-                               "File:" + filename + ": successfully created", 
-                               "Info", JOptionPane.INFORMATION_MESSAGE);
-        }
+        fileCreateSuccess(filename);
       } else {
-        System.out.println("File " + filename + " already exists.");
-        return;
+        fileCreateFailure(filename);
       }
       if(format == XMLFORMAT){
         FileWriter fw = new FileWriter(filename);
@@ -98,29 +89,9 @@ public class HttpXMLManager {
     try{
       File file = new File(filename);
       if(file.createNewFile()){
-        if(StatusObject.headless){
-          System.out.println("File " + filename + " successfully created");
-        } else {
-          JOptionPane jo = new JOptionPane();
-          jo.showMessageDialog(
-            StatusObject.mWindow, 
-            "File " + filename + " successfully created", 
-            "Success", 
-            JOptionPane.INFORMATION_MESSAGE);
-        }
+        fileCreateSuccess(filename);
       } else {
-        if(StatusObject.headless){
-          System.out.println("File " + filename + " already exists");
-          return;
-        } else {
-          JOptionPane jo = new JOptionPane();
-          jo.showMessageDialog(
-            StatusObject.mWindow, 
-            "File " + filename + " already exists", 
-            "Failure: HttpXMLManager", 
-            JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        fileCreateFailure(filename);
       }
 
       if(format == XMLFORMAT){
@@ -213,7 +184,7 @@ public class HttpXMLManager {
     }
   }
 
-  public String getBasicHTMLLayout(String title){
+  private String getBasicHTMLLayout(String title){
     String string = "<!DOCTYPE html>\n\t" +
     "<head>\n\t\t<title>"+ title + "</title>\n" +
     "\t<style>\n\ttable,th,td{" +
@@ -227,4 +198,86 @@ public class HttpXMLManager {
     "\n    Logv Version: " + StatusObject.currentVersion + "<br></h4>";
     return string;
   }
+  private void fileCreateSuccess(String filename){
+    if(StatusObject.headless){
+      System.out.println("File " + filename + " successfully created");
+    } else {
+      JOptionPane jo = new JOptionPane();
+      jo.showMessageDialog(
+        StatusObject.mWindow, 
+        "File " + filename + " successfully created", 
+        "Success", 
+        JOptionPane.INFORMATION_MESSAGE);
+    }
+  }
+  private void fileCreateFailure(String filename){
+    if(StatusObject.headless){
+      System.out.println("File " + filename + " already exists");
+      return;
+    } else {
+      JOptionPane jo = new JOptionPane();
+      jo.showMessageDialog(
+        StatusObject.mWindow, 
+        "File " + filename + " already exists", 
+        "Failure: HttpXMLManager", 
+        JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+  }
+  public void saveSQLiReport(String filename, int format){
+    try{
+      File file = new File(filename);
+      if(file.createNewFile()){
+        fileCreateSuccess(filename);
+      } else {
+        fileCreateSuccess(filename);
+      }
+
+      if(format == XMLFORMAT){
+        FileWriter fw = new FileWriter(file);
+        fw.write("<xml>\n\t<path-traversal-results>\n\t\t<log-file>" + log.getLogFile() +
+                 "</log-file>\n\t\t<logv-version>" + StatusObject.currentVersion +
+                 "</logv-version>\n");
+        for(int i = 0 ; i < log.getLogSize(); i++){
+          if(AttackIdentifier.SqliMatchFound(log.HTTPRequests.get(i))){
+            fw.write("\t\t\t<ip-addr>" + log.HTTPIpAddresses.get(i) + "</ip-addr>\n");
+            fw.write("\t\t\t<time>" + log.HTTPRequestTime.get(i) + "</time>\n");
+            fw.write("\t\t\t<request>" + log.HTTPRequests.get(i) + "</request>\n");
+            fw.write("\t\t\t<user-agent>" + log.HTTPUserAgents.get(i) + "</user-agent>");
+          }
+        }
+
+        fw.write("\t</xss-results>\n</xml>");
+        fw.close();
+      }
+
+      else if(format == HTMLFORMAT){
+        FileWriter fw = new FileWriter(file);
+        fw.write(getBasicHTMLLayout("SQLi Detection"));
+        fw.write("\n<hr>\n<table border=\"1\" style=\"width: 100%; white-space: nowrap; table-layout: fixed;\" >" +
+        "\n\t<tr>"+
+        "\n\t\t<th class=\"trheadermain\">Ip Address</th>"+
+        "\n\t\t<th class=\"trheadermain\">Time</th>"+
+        "\n\t\t<th class=\"trheadermain\">Request</th>"+
+        "\n\t\t<th class=\"trheadermain\">User Agent</th>" +
+        "\n\t</tr>");
+        for(int i = 0; i < log.getLogSize(); i++){
+          if(AttackIdentifier.SqliMatchFound(log.HTTPRequests.get(i))){
+            fw.write("\n\t<tr>\n\t\t<td style=\"white-space: nowrap;\">" + log.HTTPIpAddresses.get(i) + "</td>" +
+            "\n\t\t<td style=\"white-space: nowrap;\">" + log.HTTPRequestTime.get(i) + "</td>" +
+            "\n\t\t<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">" + log.HTTPRequests.get(i) + "</td>"+
+            "\n\t\t<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">" + log.HTTPUserAgents.get(i) + "</td>\n\t</tr>");
+
+          }
+        }
+
+        fw.write("</table></body></html>");
+        fw.close();
+      }
+
+    } catch(Exception e){
+
+    }
+  }
 }
+

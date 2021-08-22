@@ -74,13 +74,16 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
   
   private JMenu DetectionTools = new JMenu("Detection Tools");
   private JMenu FrequencyTools = new JMenu("Frequency Tools");
-  
+  private JMenu FlagMenus = new JMenu("Flags");
+  // ********************DETECTION STUFF***********************
   private JMenuItem nmapScanD = new JMenuItem("User Agent Scanner");
   private JMenuItem xxsScanD = new JMenuItem("XSS Detector");
   private JMenuItem sqliDetect = new JMenuItem("SQLi Detector");
   private JMenuItem pathTravD = new JMenuItem("Path Traversal Detector");
+  //***********************FREQUENCY STUFF***********************
   private JMenuItem ipCountOpt = new JMenuItem("Show IP Frequencies");
-  
+  //***********************FLAGS***********************
+  private JMenuItem ipFlagsTotal = new JMenuItem("IP Address Flags");
   // vv a reference to the mainWindow JFrame in logv.java
   private JFrame logvMainWindow = StatusObject.mWindow;
   // private boolean logPanelRetrieved = false;
@@ -93,6 +96,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     pathTravD.addActionListener(this);
     ipCountOpt.addActionListener(this);
     sqliDetect.addActionListener(this);
+    ipFlagsTotal.addActionListener(this);
     // set sizes and visibility
     // webLogMenu.setSize(1000,20);
     webLogMenu.setBounds(0,10,100,100);
@@ -105,9 +109,10 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     DetectionTools.add(pathTravD);
     DetectionTools.add(sqliDetect);
     FrequencyTools.add(ipCountOpt);
-
+    FlagMenus.add(ipFlagsTotal);
     webLogMenu.add(DetectionTools);
     webLogMenu.add(FrequencyTools);
+    webLogMenu.add(FlagMenus);
     panel.add(webLogMenu,BorderLayout.NORTH);
     JTable logTable = this.getLogTable();
     logTable.setBounds(0,20,400,300);
@@ -239,6 +244,10 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       jd.add(new JScrollPane(table));
       jd.setSize(300,300);
       jd.setVisible(true);
+    }
+  
+    else if(s.getSource() == ipFlagsTotal){
+
     }
   }
 
@@ -710,7 +719,30 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
         return;
       }
       if(cmdArr[1].matches("-f|--flags")){
-        HttpFlags.printSqliFlags(this);
+        if(cmdArr.length == 2){
+          HttpOptionPrinter.argumentRequired("sqli","-f|--flags");
+        
+        } else{
+          if(cmdArr[2].equals("show")){
+            HttpFlags.printSqliFlags(this);
+          } else if(cmdArr[2].equals("-xml")){
+            if(cmdArr.length == 3){
+              HttpOptionPrinter.argumentRequired("sqli","-xml");
+            } else {
+              httpXMLManager.saveSQLiReport(cmdArr[3],HttpXMLManager.XMLFORMAT);
+            }
+          } else if(cmdArr[2].equals("-html")){
+            if(cmdArr.length == 3){ HttpOptionPrinter.argumentRequired("sqli","-html");}
+            else {
+              httpXMLManager.saveSQLiReport(cmdArr[3],HttpXMLManager.HTMLFORMAT);
+            }
+          }
+        }
+        
+      } else if(cmdArr[1].matches("-h|--help|help")){
+        HttpOptionPrinter.printSQLiApache2Help();
+      } else{
+        HttpOptionPrinter.unknownArg("sqli", cmdArr[1]);
       }
     }
     else {

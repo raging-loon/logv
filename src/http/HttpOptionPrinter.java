@@ -29,7 +29,10 @@ public class HttpOptionPrinter {
   public static void argumentRequired(String commandBase, String arg){
     System.out.println(commandBase + ": " + arg + " requires an argument");
   }
-  
+  public static void unknownArg(String commandBase, String arg){
+    System.out.println(commandBase + ": unknown argument: " + arg);
+  }
+
   public static void basicApache2CommandHelp(){
     System.out.println("Apache2 Log Object, Logv v" + StatusObject.currentVersion);
     System.out.println("Informatino for the Apache2 log, -apache2, -nginx");
