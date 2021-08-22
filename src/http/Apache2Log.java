@@ -77,7 +77,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
   
   private JMenuItem nmapScanD = new JMenuItem("User Agent Scanner");
   private JMenuItem xxsScanD = new JMenuItem("XSS Detector");
-  
+  private JMenuItem sqliDetect = new JMenuItem("SQLi Detector");
   private JMenuItem pathTravD = new JMenuItem("Path Traversal Detector");
   private JMenuItem ipCountOpt = new JMenuItem("Show IP Frequencies");
   
@@ -92,6 +92,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     xxsScanD.addActionListener(this);
     pathTravD.addActionListener(this);
     ipCountOpt.addActionListener(this);
+    sqliDetect.addActionListener(this);
     // set sizes and visibility
     // webLogMenu.setSize(1000,20);
     webLogMenu.setBounds(0,10,100,100);
@@ -102,6 +103,7 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     DetectionTools.add(nmapScanD);
     DetectionTools.add(xxsScanD);
     DetectionTools.add(pathTravD);
+    DetectionTools.add(sqliDetect);
     FrequencyTools.add(ipCountOpt);
 
     webLogMenu.add(DetectionTools);
@@ -231,7 +233,14 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
       jd.setVisible(true);
     }
 
+    else if(s.getSource() == sqliDetect){
+      JDialog jd = new JDialog(StatusObject.mWindow, "SQLi Detection Results",true);
+      jd.add(new JScrollPane(HttpFlags.sqliFlagTable(this)));
+      jd.setSize(300,300);
+      jd.setVisible(true);
+    }
   }
+
 
   public Apache2Log(String logFile){ this.logFile = logFile; this.logFormat="apache2";}
   
