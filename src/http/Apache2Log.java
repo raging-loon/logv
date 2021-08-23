@@ -247,7 +247,10 @@ public class Apache2Log extends LogObject implements LogFormat,Runnable, ActionL
     }
   
     else if(s.getSource() == ipFlagsTotal){
-
+      JDialog jd = new JDialog(StatusObject.mWindow,"IP Flag Results",true);
+      jd.add(new JScrollPane(HttpFlags.fullFlagReport(this)));
+      jd.setSize(300,300);
+      jd.setVisible(true);
     }
   }
 
