@@ -21,6 +21,7 @@ public class logvcli{
 
       passes++;
     }
+    sc.close();
   }
 
   private String getPrompt(ShellManager x){

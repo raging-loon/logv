@@ -2,13 +2,12 @@ package src.http;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JTable;
 
 import src.utils.AttackIdentifier;
-import src.utils.MiscUtils;
 
 /**
  * Class HttpFlags
@@ -72,24 +71,24 @@ public class HttpFlags {
 
 
   public static JTable fullFlagReport(Apache2Log log){
-    List<Integer> UserAgentFlag = new ArrayList<>();
-    List<Integer> XSSFlag = new ArrayList<>();
-    List<Integer> SQLiFlag = new ArrayList<>();
-    List<Integer> PTFlag = new ArrayList<>();
-    List<Integer> AllLocations = new ArrayList<>();
+    List<String> UserAgentFlag = new ArrayList<>();
+    List<String> XSSFlag = new ArrayList<>();
+    List<String> SQLiFlag = new ArrayList<>();
+    List<String> PTFlag = new ArrayList<>();
+    List<String> AllLocations = new ArrayList<>();
     System.out.println();
     for(int i = 0; i < log.HTTPIpAddresses.size(); i++){
       if(AttackIdentifier.PathTraversalMatchFound(log.HTTPRequests.get(i))){
-        PTFlag.add(i);
+        PTFlag.add(log.HTTPIpAddresses.get(i));
         continue;
       } else if(AttackIdentifier.XssMatchFound(log.HTTPRequests.get(i))){
-        XSSFlag.add(i);
+        XSSFlag.add(log.HTTPIpAddresses.get(i));
         continue;
       } else if(AttackIdentifier.SqliMatchFound(log.HTTPRequests.get(i))){
-        SQLiFlag.add(i);
+        SQLiFlag.add(log.HTTPIpAddresses.get(i));
         continue;
       } else if(log.nmapScanSearch(i)){
-        UserAgentFlag.add(i);
+        UserAgentFlag.add(log.HTTPIpAddresses.get(i));
         continue;
       } else {
         
@@ -101,15 +100,15 @@ public class HttpFlags {
     AllLocations.addAll(SQLiFlag);
     AllLocations.addAll(PTFlag);
   
-    List<Integer> newList = AllLocations.stream().distinct().collect(Collectors.toList());
+    List<String> newList = AllLocations.stream().distinct().collect(Collectors.toList());
     
     System.out.println(AllLocations.size() == newList.size());
     String[] headers = {"Ip Address","XSS Flag","SQLi Flag","Path Traversal Flag","UA Flag"};
     Object[][] data = new Object[newList.size()][];
-    List<Integer> usedIp = new ArrayList<>();
+    List<String> usedIp = new ArrayList<>();
     for(int i = 0; i <  newList.size(); i++){
       Object[] tempData = new Object[headers.length];
-      for(int j : newList){
+      for(String j : newList){
         if(usedIp.contains(j)){
           continue;
         }

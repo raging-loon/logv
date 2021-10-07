@@ -2,7 +2,6 @@ package src.http;
 import java.io.*;
 import javax.swing.JOptionPane;
 import src.*;
-import src.http.Apache2Log;
 import src.utils.AttackIdentifier;
 public class HttpXMLManager {
   public static final int HTMLFORMAT = 12;
