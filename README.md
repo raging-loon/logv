@@ -17,12 +17,8 @@ Please contact me at jgnovak1@protonmail.com if you would like to contribute or 
   - MySQL error.log
   - VSFTPD vsftpd.log
 
-## Installation
-The JAR file will be located at https://github.com/raging-loon/logv-jar
-Follow the installation steps for you operating system. 
-If you already are familiar with Java, you know what to do.
 ## What's happening now
-Right now I am working on putting everything in a GUI with each log being seperated by tabs. After the GUI is up and running, I will work on more log files.
-Also, the shell for headless systems is under construction.
+Nothing is happening right now, this project is no longer being maintained. I am working on my senior project which you can find here: 
+https://github.com/raging-loon/synaptic
 ![](https://github.com/raging-loon/logv/blob/main/screenshots/screenshot2.png)
   
